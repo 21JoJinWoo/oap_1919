@@ -131,6 +131,7 @@ app.use(
     setHeaders: (res) => res.setHeader('content-type', 'model/gltf-binary'),
   }),
 );
+app.use('/env', express.static(join(dataDir, 'env'), { maxAge: '30d' }));
 app.use('/mediapipe/wasm', express.static(join(root, 'node_modules/@mediapipe/tasks-vision/wasm'), { maxAge: '30d' }));
 
 if (isProd) {

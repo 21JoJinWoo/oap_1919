@@ -49,6 +49,17 @@ export interface SceneLight {
 
 export interface SceneSettings {
   background: string;
+  /** Image-based lighting and sky backdrop, produced by scripts/prepare-hdri.ts. */
+  environment?: {
+    /** Small Radiance HDR used for lighting. */
+    hdr: string;
+    /** Tone-mapped equirectangular sky image shown as the background. */
+    sky: string;
+    /** Renderer exposure; the sky image is baked at this exposure. */
+    exposure: number;
+    /** Strength of the image-based lighting. */
+    intensity: number;
+  };
   fog: { enabled: boolean; color: string; near: number; far: number };
   shadows: boolean;
   /**

@@ -1,6 +1,10 @@
 import { PerformanceMonitor } from '@react-three/drei';
-import { Canvas, type RootState } from '@react-three/fiber';
-import { useState } from 'react';
+import { Canvas, useLoader, useThree, type RootState } from '@react-three/fiber';
+import { Suspense, useLayoutEffect, useState } from 'react';
+import { EquirectangularReflectionMapping, SRGBColorSpace, TextureLoader } from 'three';
+import { HDRLoader } from 'three/examples/jsm/loaders/HDRLoader.js';
+import { assetUrl } from '../lib/assets';
+import type { SceneSettings } from '../types';
 import { useScene } from '../store/sceneStore';
 import { EditorRig, PortalGizmo, StatsProbe, TransformGizmo } from './EditTools';
 import { PortalRig } from './PortalRig';
@@ -11,12 +15,43 @@ const MAX_DPR = Math.min(typeof window === 'undefined' ? 1 : window.devicePixelR
 function Atmosphere() {
   const background = useScene((s) => s.doc?.settings.background ?? '#000000');
   const fog = useScene((s) => s.doc?.settings.fog);
+  const env = useScene((s) => s.doc?.settings.environment);
+  const flat = <color attach="background" args={[background]} />;
   return (
     <>
-      <color attach="background" args={[background]} />
+      {env ? (
+        <Suspense fallback={flat}>
+          <HdriEnvironment env={env} />
+        </Suspense>
+      ) : (
+        flat
+      )}
       {fog?.enabled && <fog attach="fog" args={[fog.color, fog.near, fog.far]} />}
     </>
   );
+}
+
+/** HDR image-based lighting plus a pre-tone-mapped sky backdrop (sRGB, so three.js skips tone mapping it). */
+function HdriEnvironment({ env }: { env: NonNullable<SceneSettings['environment']> }) {
+  const hdr = useLoader(HDRLoader, assetUrl(env.hdr));
+  const sky = useLoader(TextureLoader, assetUrl(env.sky));
+  const scene = useThree((s) => s.scene);
+  const gl = useThree((s) => s.gl);
+  useLayoutEffect(() => {
+    hdr.mapping = EquirectangularReflectionMapping;
+    sky.mapping = EquirectangularReflectionMapping;
+    sky.colorSpace = SRGBColorSpace;
+    scene.environment = hdr;
+    scene.background = sky;
+    scene.environmentIntensity = env.intensity;
+    gl.toneMappingExposure = env.exposure;
+    return () => {
+      scene.environment = null;
+      scene.background = null;
+      gl.toneMappingExposure = 1;
+    };
+  }, [hdr, sky, scene, gl, env.intensity, env.exposure]);
+  return null;
 }
 
 export function Stage({ onCreated }: { onCreated?: (state: RootState) => void }) {

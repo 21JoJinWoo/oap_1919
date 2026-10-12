@@ -28,6 +28,8 @@ function localAssets(): Plugin {
       if (!existsSync(out)) return;
       cpSync(mediapipeWasm, join(out, 'mediapipe/wasm'), { recursive: true });
       cpSync(join(dataDir, 'scene.json'), join(out, 'scene.json'));
+      const env = join(dataDir, 'env');
+      if (existsSync(env)) cpSync(env, join(out, 'env'), { recursive: true });
       const models = join(dataDir, 'models');
       if (existsSync(models) && readdirSync(models).some((f) => f.endsWith('.glb'))) {
         cpSync(models, join(out, 'models'), { recursive: true, filter: (f) => !f.endsWith('.gitkeep') });

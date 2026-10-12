@@ -13,6 +13,7 @@ import {
   type BufferGeometry,
   type Object3D,
 } from 'three';
+import { assetUrl } from '../lib/assets';
 import { useScene } from '../store/sceneStore';
 import type { PrimitiveKind, SceneLight, SceneObject } from '../types';
 
@@ -72,9 +73,6 @@ function onSelect(type: 'object' | 'light', id: string) {
     useScene.getState().select({ type, id });
   };
 }
-
-/** Root-relative model paths ("/models/x.glb") resolve against the app base, so builds served from a sub-path work. */
-const assetUrl = (src: string) => (src.startsWith('/') ? `${import.meta.env.BASE_URL}${src.slice(1)}` : src);
 
 function GlbModel({ src, castShadow, receiveShadow }: { src: string; castShadow: boolean; receiveShadow: boolean }) {
   const { scene } = useGLTF(assetUrl(src));

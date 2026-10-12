@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-12T08:05:04.244Z",
+  "updatedAt": "2026-10-12T08:19:15.847Z",
   "settings": {
     "background": "#c7ced3",
     "fog": {
       "enabled": true,
-      "color": "#c7ced3",
+      "color": "#a1afbd",
       "near": 30,
       "far": 110
     },
@@ -26,6 +26,12 @@
       "webcamFovDeg": 60,
       "parallax": 1,
       "defaultDistanceCm": 60
+    },
+    "environment": {
+      "hdr": "/env/citrus_orchard_road_puresky_4k-env.hdr",
+      "sky": "/env/citrus_orchard_road_puresky_4k-sky.webp",
+      "exposure": 0.49,
+      "intensity": 1
     }
   },
   "lights": [
@@ -42,18 +48,18 @@
         0
       ],
       "castShadow": false,
-      "visible": true
+      "visible": false
     },
     {
       "id": "light-sun",
-      "name": "태양광",
+      "name": "태양광 (1919.3.1 14시)",
       "kind": "directional",
-      "color": "#fff1dc",
-      "intensity": 2.4,
+      "color": "#fff3e2",
+      "intensity": 4,
       "position": [
-        18,
-        26,
-        14
+        -12.8,
+        26.3,
+        27.3
       ],
       "castShadow": true,
       "visible": true
