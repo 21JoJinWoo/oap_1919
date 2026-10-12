@@ -45,6 +45,8 @@ export interface SceneLight {
   position: Vec3;
   castShadow: boolean;
   visible: boolean;
+  /** Directional light placed and tinted by the time-of-day sun. */
+  followSun?: boolean;
 }
 
 export interface SceneSettings {
@@ -60,6 +62,17 @@ export interface SceneSettings {
     /** Strength of the image-based lighting. */
     intensity: number;
   };
+  /** Time of day: drives the sun light, sky / ambient brightness and fog tint. */
+  timeOfDay?: {
+    /** Local clock hour, e.g. 14.5 = 14:30. */
+    hour: number;
+    date: [number, number, number];
+    lat: number;
+    lon: number;
+    /** UTC offset of the clock, hours. */
+    tz: number;
+  };
+  /** `color` is the daytime horizon colour; with timeOfDay it is darkened / warmed automatically. */
   fog: { enabled: boolean; color: string; near: number; far: number };
   shadows: boolean;
   /**

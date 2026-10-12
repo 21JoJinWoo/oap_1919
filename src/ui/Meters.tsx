@@ -46,6 +46,51 @@ export function DepthSlider() {
   );
 }
 
+const HOUR_MIN = 5;
+const HOUR_MAX = 20;
+const fmtHour = (h: number) => `${String(Math.floor(h)).padStart(2, '0')}:${String(Math.round((h % 1) * 60)).padStart(2, '0')}`;
+
+/** Vertical slider for the time of day (1919-03-01, local time). */
+export function TimeSlider() {
+  const tod = useScene((s) => s.doc?.settings.timeOfDay);
+  const track = useRef<HTMLDivElement>(null);
+  if (!tod) return null;
+  const t = (tod.hour - HOUR_MIN) / (HOUR_MAX - HOUR_MIN);
+
+  const setFromPointer = (clientY: number) => {
+    const el = track.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const f = Math.min(1, Math.max(0, (r.bottom - clientY) / r.height));
+    const hour = Math.round((HOUR_MIN + f * (HOUR_MAX - HOUR_MIN)) * 4) / 4;
+    useScene.getState().updateSettings((s) => void (s.timeOfDay!.hour = hour), '시간대', 'time');
+  };
+
+  return (
+    <div className="meter" title="TIME: 1919년 3월 1일 탑골공원의 시각 (더블클릭: 14:00)">
+      <span className="vlabel" style={{ color: 'rgba(120,180,255,0.75)' }}>
+        TIME
+      </span>
+      <div
+        ref={track}
+        className="depth-track time-track"
+        onPointerDown={(e) => {
+          e.currentTarget.setPointerCapture(e.pointerId);
+          setFromPointer(e.clientY);
+        }}
+        onPointerMove={(e) => {
+          if (e.buttons) setFromPointer(e.clientY);
+        }}
+        onDoubleClick={() => useScene.getState().updateSettings((s) => void (s.timeOfDay!.hour = 14), '시간대 초기화')}
+      >
+        <div className="depth-fill" style={{ height: `${t * 100}%` }} />
+        <div className="depth-knob" style={{ bottom: `calc(${t * 100}% - 7px)` }} />
+      </div>
+      <span style={{ fontSize: 10, color: 'rgb(120,180,255)' }}>{fmtHour(tod.hour)}</span>
+    </div>
+  );
+}
+
 const SEGMENTS = [
   { rgb: '50,210,80', label: '쾌적' },
   { rgb: '140,210,50', label: '양호' },

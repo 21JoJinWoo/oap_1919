@@ -542,3 +542,15 @@ button {
     width: auto;
   }
 }
+
+.time-track {
+  background: rgba(120, 180, 255, 0.06);
+  border-color: rgba(120, 180, 255, 0.25);
+}
+.time-track .depth-fill {
+  background: linear-gradient(to top, rgba(255, 150, 80, 0.45), rgba(120, 180, 255, 0.35));
+}
+.time-track .depth-knob {
+  background: rgb(120, 180, 255);
+  box-shadow: 0 0 8px rgba(120, 180, 255, 0.8);
+}

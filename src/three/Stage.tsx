@@ -9,6 +9,7 @@ import { useScene } from '../store/sceneStore';
 import { EditorRig, PortalGizmo, StatsProbe, TransformGizmo } from './EditTools';
 import { PortalRig } from './PortalRig';
 import { SceneLights, SceneObjects } from './SceneObjects';
+import { useDaylight } from './useDaylight';
 
 const MAX_DPR = Math.min(typeof window === 'undefined' ? 1 : window.devicePixelRatio, 2);
 
@@ -16,23 +17,24 @@ function Atmosphere() {
   const background = useScene((s) => s.doc?.settings.background ?? '#000000');
   const fog = useScene((s) => s.doc?.settings.fog);
   const env = useScene((s) => s.doc?.settings.environment);
+  const day = useDaylight();
   const flat = <color attach="background" args={[background]} />;
   return (
     <>
       {env ? (
         <Suspense fallback={flat}>
-          <HdriEnvironment env={env} />
+          <HdriEnvironment env={env} sky={day?.sky ?? 1} />
         </Suspense>
       ) : (
         flat
       )}
-      {fog?.enabled && <fog attach="fog" args={[fog.color, fog.near, fog.far]} />}
+      {fog?.enabled && <fog attach="fog" args={[day?.fogColor ?? fog.color, fog.near, fog.far]} />}
     </>
   );
 }
 
 /** HDR image-based lighting plus a pre-tone-mapped sky backdrop (sRGB, so three.js skips tone mapping it). */
-function HdriEnvironment({ env }: { env: NonNullable<SceneSettings['environment']> }) {
+function HdriEnvironment({ env, sky: skyLevel }: { env: NonNullable<SceneSettings['environment']>; sky: number }) {
   const hdr = useLoader(HDRLoader, assetUrl(env.hdr));
   const sky = useLoader(TextureLoader, assetUrl(env.sky));
   const scene = useThree((s) => s.scene);
@@ -43,14 +45,16 @@ function HdriEnvironment({ env }: { env: NonNullable<SceneSettings['environment'
     sky.colorSpace = SRGBColorSpace;
     scene.environment = hdr;
     scene.background = sky;
-    scene.environmentIntensity = env.intensity;
+    scene.environmentIntensity = env.intensity * skyLevel;
+    scene.backgroundIntensity = skyLevel;
     gl.toneMappingExposure = env.exposure;
     return () => {
       scene.environment = null;
       scene.background = null;
+      scene.backgroundIntensity = 1;
       gl.toneMappingExposure = 1;
     };
-  }, [hdr, sky, scene, gl, env.intensity, env.exposure]);
+  }, [hdr, sky, scene, gl, env.intensity, env.exposure, skyLevel]);
   return null;
 }
 

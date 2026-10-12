@@ -15,6 +15,7 @@ import {
 } from 'three';
 import { assetUrl } from '../lib/assets';
 import { useScene } from '../store/sceneStore';
+import { useDaylight } from './useDaylight';
 import type { PrimitiveKind, SceneLight, SceneObject } from '../types';
 
 /** Live Object3D for each object / light id, used by the transform gizmo. */
@@ -147,18 +148,24 @@ const LightNode = memo(function LightNode({
   shadows: boolean;
   showHelpers: boolean;
 }) {
+  const day = useDaylight();
   if (!light.visible) return null;
-  const cast = shadows && light.castShadow;
+  // A sun-following light takes its direction, tint and strength from the time of day.
+  const sunDriven = !!(light.followSun && day);
+  const position = sunDriven ? (day!.direction.map((v) => v * 40) as [number, number, number]) : light.position;
+  const color = sunDriven ? day!.sunColor : light.color;
+  const intensity = sunDriven ? light.intensity * day!.sun : light.intensity;
+  const cast = shadows && light.castShadow && intensity > 0;
   return (
-    <group ref={register(light.id)} name={light.id} position={light.position}>
+    <group ref={register(light.id)} name={light.id} position={position}>
       {light.kind === 'ambient' && <ambientLight color={light.color} intensity={light.intensity} />}
       {light.kind === 'hemisphere' && (
         <hemisphereLight args={[light.color, light.groundColor ?? '#444444', light.intensity]} />
       )}
       {light.kind === 'directional' && (
         <directionalLight
-          color={light.color}
-          intensity={light.intensity}
+          color={color}
+          intensity={intensity}
           castShadow={cast}
           shadow-mapSize={[2048, 2048]}
           shadow-bias={-0.0005}

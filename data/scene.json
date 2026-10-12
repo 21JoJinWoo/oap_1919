@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-12T08:19:15.847Z",
+  "updatedAt": "2026-10-12T08:54:41.525Z",
   "settings": {
     "background": "#c7ced3",
     "fog": {
@@ -32,6 +32,17 @@
       "sky": "/env/citrus_orchard_road_puresky_4k-sky.webp",
       "exposure": 0.49,
       "intensity": 1
+    },
+    "timeOfDay": {
+      "hour": 14,
+      "date": [
+        1919,
+        3,
+        1
+      ],
+      "lat": 37.5711,
+      "lon": 126.9883,
+      "tz": 9
     }
   },
   "lights": [
@@ -52,7 +63,7 @@
     },
     {
       "id": "light-sun",
-      "name": "태양광 (1919.3.1 14시)",
+      "name": "태양광 (시간대 연동)",
       "kind": "directional",
       "color": "#fff3e2",
       "intensity": 4,
@@ -62,7 +73,8 @@
         27.3
       ],
       "castShadow": true,
-      "visible": true
+      "visible": true,
+      "followSun": true
     }
   ],
   "objects": [
@@ -126,7 +138,7 @@
       "triangles": 47997,
       "position": [
         -6,
-        0,
+        0.1,
         -30
       ],
       "rotation": [
@@ -1415,6 +1427,136 @@
       ],
       "visible": true,
       "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-soldier-rifle",
+      "name": "군인 (서서 조준)",
+      "kind": "glb",
+      "src": "/models/soldier_1-0b85d17461.glb",
+      "bytes": 1873524,
+      "triangles": 32872,
+      "position": [
+        -0.22,
+        0,
+        -1.23
+      ],
+      "rotation": [
+        0,
+        -31.98,
+        0
+      ],
+      "scale": [
+        1.68,
+        1.68,
+        1.68
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-soldier-kneel",
+      "name": "군인 (무릎 쏴)",
+      "kind": "glb",
+      "src": "/models/soldier_2-a58a735711.glb",
+      "bytes": 1900504,
+      "triangles": 41654,
+      "position": [
+        -4.38,
+        0,
+        -10.66
+      ],
+      "rotation": [
+        0,
+        47.17,
+        0
+      ],
+      "scale": [
+        1.45,
+        1.45,
+        1.45
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-soldier-run",
+      "name": "군인 (권총 돌진)",
+      "kind": "glb",
+      "src": "/models/soldier_3-9f9c86a889.glb",
+      "bytes": 1910756,
+      "triangles": 42018,
+      "position": [
+        6,
+        0,
+        -12
+      ],
+      "rotation": [
+        0,
+        -30.6,
+        0
+      ],
+      "scale": [
+        1.8,
+        1.8,
+        1.8
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-soldier-horse",
+      "name": "기마병",
+      "kind": "glb",
+      "src": "/models/soldier_4-6d8279d362.glb",
+      "bytes": 1614556,
+      "triangles": 30037,
+      "position": [
+        21,
+        0,
+        -44
+      ],
+      "rotation": [
+        0,
+        -30.26,
+        0
+      ],
+      "scale": [
+        2.5,
+        2.5,
+        2.5
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-pagoda-base",
+      "name": "석탑 돌 기단·난간",
+      "kind": "glb",
+      "src": "/models/stone-b49978f61b.glb",
+      "bytes": 1691896,
+      "triangles": 27307,
+      "position": [
+        -6,
+        0,
+        -30
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        9.5,
+        6,
+        9.5
+      ],
+      "visible": true,
+      "castShadow": true,
       "receiveShadow": true
     }
   ]

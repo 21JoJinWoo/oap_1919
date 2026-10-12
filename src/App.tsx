@@ -7,7 +7,7 @@ import { Stage } from './three/Stage';
 import { FaceTracker } from './tracking/faceTracker';
 import { neutralPose } from './tracking/headPose';
 import { CameraPreview, TrackingToggle } from './ui/CameraDock';
-import { DataMeter, DepthSlider, LoadMeter } from './ui/Meters';
+import { DataMeter, DepthSlider, LoadMeter, TimeSlider } from './ui/Meters';
 import { AddPanel, HistoryPanel, Inspector, LayersPanel, SettingsPanel } from './ui/Panels';
 import type { SceneDoc } from './types';
 
@@ -339,6 +339,7 @@ function Hud({ tracker, onSave, onRecord }: { tracker: FaceTracker | null; onSav
 
       <div className="meters">
         <DepthSlider />
+        <TimeSlider />
         <LoadMeter />
         <DataMeter />
       </div>
