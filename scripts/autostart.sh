@@ -14,6 +14,15 @@ PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
 LOG="$HOME/Library/Logs/oap1919.log"
 DOMAIN="gui/$(id -u)"
 
+# Stops the agent and waits (up to 10 s) until launchd has fully removed it.
+unload_agent() {
+  launchctl bootout "$DOMAIN/$LABEL" 2>/dev/null || true
+  for _ in {1..20}; do
+    launchctl print "$DOMAIN/$LABEL" >/dev/null 2>&1 || return 0
+    sleep 0.5
+  done
+}
+
 case "${1:-}" in
   install)
     mkdir -p "$HOME/Library/LaunchAgents" "$HOME/Library/Logs"
@@ -36,8 +45,13 @@ case "${1:-}" in
 </dict>
 </plist>
 PLIST
-    launchctl bootout "$DOMAIN/$LABEL" 2>/dev/null || true
-    launchctl bootstrap "$DOMAIN" "$PLIST"
+    unload_agent
+    # bootstrap can fail with "5: Input/output error" while launchd is still
+    # tearing down the previous instance: retry, then fall back to `load`.
+    if ! launchctl bootstrap "$DOMAIN" "$PLIST" 2>/dev/null; then
+      sleep 2
+      launchctl bootstrap "$DOMAIN" "$PLIST" 2>/dev/null || launchctl load -w "$PLIST"
+    fi
     echo "설치 완료. 몇 초 뒤 크롬에서 http://localhost:5173 을 여세요. (로그: $LOG)"
     ;;
   restart)
@@ -52,7 +66,7 @@ PLIST
     fi
     ;;
   uninstall)
-    launchctl bootout "$DOMAIN/$LABEL" 2>/dev/null || true
+    unload_agent
     rm -f "$PLIST"
     echo "자동 실행을 해제했습니다."
     ;;
