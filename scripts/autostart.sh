@@ -25,7 +25,7 @@ case "${1:-}" in
   <key>Label</key><string>$LABEL</string>
   <key>ProgramArguments</key>
   <array>
-    <string>/bin/zsh</string><string>-lc</string><string>exec npm run dev</string>
+    <string>/bin/zsh</string><string>-lc</string><string>exec ./scripts/run-with-sync.sh</string>
   </array>
   <key>WorkingDirectory</key><string>$REPO</string>
   <key>RunAtLoad</key><true/>

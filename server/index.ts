@@ -50,6 +50,13 @@ app.get('/api/scene', async (_req, res) => {
   res.json(await readScene());
 });
 
+/** Cheap change check for open pages: they reload the scene when this moves. */
+app.get('/api/scene/meta', async (_req, res) => {
+  res.setHeader('cache-control', 'no-store');
+  const { updatedAt } = await readScene();
+  res.json({ updatedAt });
+});
+
 app.put('/api/scene', requireEdit, express.json({ limit: '10mb' }), async (req, res) => {
   const doc = req.body as SceneDoc;
   if (!doc || doc.version !== 1 || !Array.isArray(doc.objects) || !Array.isArray(doc.lights) || !doc.settings) {

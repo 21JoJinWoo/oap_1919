@@ -18,6 +18,9 @@ export function App() {
   const doc = useScene((s) => s.doc);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [draft, setDraft] = useState<Draft | null>(null);
+  const [remoteNewer, setRemoteNewer] = useState(false);
+  /** Server version the user chose to ignore, so the banner doesn't reappear for it. */
+  const dismissedAt = useRef<string | null>(null);
   const [tracker, setTracker] = useState<FaceTracker | null>(null);
   const glRef = useRef<RootState['gl'] | null>(null);
   const recorder = useRef<MediaRecorder | null>(null);
@@ -45,6 +48,31 @@ export function App() {
       }),
     [],
   );
+
+  // ---------- pick up scene changes made elsewhere (git sync, another tab) ----------
+  useEffect(() => {
+    const timer = setInterval(async () => {
+      const s = useScene.getState();
+      if (!s.doc || s.readOnly || useUi.getState().busy) return;
+      try {
+        const res = await fetch('/api/scene/meta', { cache: 'no-store' });
+        if (!res.ok) return;
+        const { updatedAt } = (await res.json()) as { updatedAt: string };
+        if (updatedAt === s.savedAt) return;
+        if (s.dirty) {
+          if (dismissedAt.current !== updatedAt) setRemoteNewer(true);
+          dismissedAt.current = updatedAt;
+          return;
+        }
+        const { doc } = await loadScene();
+        useScene.getState().load(doc, { readOnly: false, savedAt: doc.updatedAt });
+        useUi.getState().notify('새 버전의 장면을 불러왔습니다.');
+      } catch {
+        /* server restarting: try again next tick */
+      }
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
 
   // ---------- face tracker lifecycle ----------
   useEffect(() => {
@@ -86,6 +114,7 @@ export function App() {
       markSaved(updatedAt);
       writeDraft(null);
       setDraft(null);
+      setRemoteNewer(false);
       ui.notify('저장되었습니다.');
     } catch (err) {
       ui.notify(`저장 실패: ${(err as Error).message}`, 'error');
@@ -189,6 +218,25 @@ export function App() {
         <Stage onCreated={(s) => (glRef.current = s.gl)} />
       </div>
       <Hud tracker={tracker} onSave={save} onRecord={toggleRecording} />
+      {remoteNewer && (
+        <div className="banner" style={{ bottom: draft ? 240 : 196 }}>
+          <span>↻ 서버에 새 버전의 장면이 있습니다</span>
+          <button
+            className="mini"
+            onClick={async () => {
+              const { doc } = await loadScene();
+              useScene.getState().load(doc, { readOnly: false, savedAt: doc.updatedAt });
+              writeDraft(null);
+              setRemoteNewer(false);
+            }}
+          >
+            새 버전 불러오기 (내 편집 버림)
+          </button>
+          <button className="mini" onClick={() => setRemoteNewer(false)}>
+            닫기
+          </button>
+        </div>
+      )}
       {draft && (
         <div className="banner">
           <span>↺ 저장하지 않은 로컬 편집 있음</span>
