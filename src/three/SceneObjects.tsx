@@ -67,8 +67,11 @@ function onSelect(type: 'object' | 'light', id: string) {
   };
 }
 
+/** Root-relative model paths ("/models/x.glb") resolve against the app base, so builds served from a sub-path work. */
+const assetUrl = (src: string) => (src.startsWith('/') ? `${import.meta.env.BASE_URL}${src.slice(1)}` : src);
+
 function GlbModel({ src, castShadow, receiveShadow }: { src: string; castShadow: boolean; receiveShadow: boolean }) {
-  const { scene } = useGLTF(src);
+  const { scene } = useGLTF(assetUrl(src));
   // Clone shares geometry and materials with the cached original, so repeated
   // placements of one GLB cost no extra GPU memory.
   return <Clone object={scene} castShadow={castShadow} receiveShadow={receiveShadow} />;
