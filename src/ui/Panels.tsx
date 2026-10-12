@@ -249,6 +249,13 @@ export function SettingsPanel() {
       <Field label="방향 °">
         <NumberInput value={portal.yawDeg} step={5} onChange={(v) => upd((s) => void (s.portal.yawDeg = v), '포탈 방향', 'portal.yaw')} />
       </Field>
+      <Field label="광각 배율">
+        <NumberInput value={portal.fovScale ?? 1} step={0.1} min={0.3} max={4} onChange={(v) => upd((s) => void (s.portal.fovScale = v), '광각 배율', 'portal.fov')} />
+      </Field>
+      <Field label="시선 높이">
+        <NumberInput value={portal.eyeOffsetY ?? 0} step={0.01} onChange={(v) => upd((s) => void (s.portal.eyeOffsetY = v), '시선 높이', 'portal.eyeY')} />
+      </Field>
+      <p className="note">광각 배율 1 = 실제 창문과 같은 화각. 값을 키우면 화각이 넓어집니다. 시선 높이를 음수로 하면 시선이 창 중심보다 낮아져 위쪽이 더 보입니다.</p>
 
       <h3>화면 · 웹캠 보정</h3>
       <Field label="화면 너비 cm">

@@ -1,6 +1,7 @@
 import { useFrame, useThree } from '@react-three/fiber';
 import { useLayoutEffect, useMemo } from 'react';
 import { Euler, MathUtils, Quaternion } from 'three';
+import { eyeInWindow } from '../lib/portal';
 import { useScene } from '../store/sceneStore';
 import { useUi } from '../store/uiStore';
 import { headPose } from '../tracking/headPose';
@@ -58,12 +59,11 @@ export function PortalRig() {
       headPose.z = MathUtils.lerp(headPose.z, restZ, ease * 0.5);
     }
 
-    // Physical metres -> world units: the screen maps onto the portal window.
-    const k = portal.width / screenW;
     camera.windowWidth = portal.width;
     camera.windowCenter.fromArray(portal.center);
     camera.windowQuat.copy(quat.setFromEuler(euler.set(0, MathUtils.degToRad(portal.yawDeg), 0)));
-    camera.eyeLocal.set(headPose.x * viewer.parallax * k, headPose.y * viewer.parallax * k, headPose.z * k);
+    const eye = eyeInWindow(doc.settings, headPose);
+    camera.eyeLocal.set(eye.x, eye.y, eye.z);
     camera.near = Math.min(0.05, camera.eyeLocal.z * 0.5);
     camera.updatePose();
     camera.updateProjectionMatrix();

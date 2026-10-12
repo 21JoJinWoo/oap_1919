@@ -55,7 +55,15 @@ export interface SceneSettings {
    * The virtual window. The physical screen is mapped onto a rectangle of
    * `width` world units centred at `center`, looking down -Z rotated by `yawDeg`.
    */
-  portal: { center: Vec3; width: number; yawDeg: number };
+  portal: {
+    center: Vec3;
+    width: number;
+    yawDeg: number;
+    /** Widens the view by bringing the virtual eye closer to the window (1 = physically exact). */
+    fovScale?: number;
+    /** Neutral eye height relative to the window centre, world units (negative = view tilts up). */
+    eyeOffsetY?: number;
+  };
   /** Physical viewing setup used to convert the tracked face into metres. */
   viewer: {
     /** Visible screen width in centimetres. */

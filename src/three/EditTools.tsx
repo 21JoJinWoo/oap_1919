@@ -3,6 +3,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { MathUtils, type Mesh, type Object3D } from 'three';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
+import { eyeInWindow } from '../lib/portal';
 import { useScene } from '../store/sceneStore';
 import { useUi } from '../store/uiStore';
 import { headPose } from '../tracking/headPose';
@@ -97,22 +98,22 @@ export function PortalGizmo() {
 
   useFrame(() => {
     if (!eye.current || !portal || !viewer) return;
-    const k = portal.width / (viewer.screenWidthCm / 100);
-    eye.current.position.set(headPose.x * viewer.parallax * k, headPose.y * viewer.parallax * k, headPose.z * k);
+    const e = eyeInWindow({ portal, viewer }, headPose);
+    eye.current.position.set(e.x, e.y, e.z);
   });
 
   if (!portal || !viewer || !frame) return null;
   // Rays from the neutral eye through each window corner, out to `depth` behind the window.
   const depth = 60;
-  const eyeZ = (portal.width / (viewer.screenWidthCm / 100)) * (viewer.defaultDistanceCm / 100);
-  const spread = 1 + depth / eyeZ;
+  const rest = eyeInWindow({ portal, viewer }, { x: 0, y: 0, z: viewer.defaultDistanceCm / 100 });
+  const spread = 1 + depth / rest.z;
   return (
     <group position={portal.center} rotation={[0, MathUtils.degToRad(portal.yawDeg), 0]}>
       <Line points={[...frame.corners, frame.corners[0]]} color="#ff6a00" lineWidth={2} />
       {frame.corners.map((c, i) => (
         <Line
           key={i}
-          points={[c, [c[0] * spread, c[1] * spread, -depth]]}
+          points={[c, [c[0] + (c[0] - rest.x) * (spread - 1), c[1] + (c[1] - rest.y) * (spread - 1), -depth]]}
           color="#ff6a00"
           lineWidth={1}
           transparent
