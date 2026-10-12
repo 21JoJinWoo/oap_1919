@@ -43,7 +43,7 @@ EDIT_TOKEN=비밀번호 npm start   # http://localhost:3000
 npm run optimize -- ./my-models --add   # 폴더의 GLB를 최적화해 data/models에 넣고 장면에 추가
 ```
 
-상한값은 `MAX_TRIANGLES`, `MAX_TEXTURE_SIZE` 환경 변수로 바꿀 수 있습니다.
+`source-models/`에는 Tripo 원본 GLB를 보관합니다(사이트는 최적화된 `data/models/`만 사용). 상한값은 `MAX_TRIANGLES`, `MAX_TEXTURE_SIZE` 환경 변수로 바꿀 수 있습니다.
 현재 장면의 회색 도형들은 GLB가 들어오기 전까지 쓰는 임시 배치용입니다.
 
 ## 화면 보정

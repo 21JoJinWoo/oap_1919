@@ -1,4 +1,5 @@
 import { createHash, timingSafeEqual } from 'node:crypto';
+import { createServer as createHttpServer } from 'node:http';
 import { existsSync } from 'node:fs';
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { basename, join, resolve } from 'node:path';
@@ -19,6 +20,7 @@ await mkdir(modelsDir, { recursive: true });
 
 const app = express();
 app.disable('x-powered-by');
+const httpServer = createHttpServer(app);
 
 function requireEdit(req: Request, res: Response, next: NextFunction) {
   if (!editToken) return next();
@@ -134,7 +136,8 @@ if (isProd) {
   app.get(/^(?!\/api\/).*/, (_req, res) => res.sendFile(join(dist, 'index.html')));
 } else {
   const { createServer } = await import('vite');
-  const vite = await createServer({ root, server: { middlewareMode: true }, appType: 'spa' });
+  // HMR shares the app's port instead of a fixed extra one.
+  const vite = await createServer({ root, server: { middlewareMode: true, hmr: { server: httpServer } }, appType: 'spa' });
   app.use(vite.middlewares);
 }
 
@@ -143,7 +146,7 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   res.status(500).json({ error: err.message });
 });
 
-app.listen(port, () => {
+httpServer.listen(port, () => {
   console.log(`OAP 1919 ${isProd ? 'production' : 'dev'} server → http://localhost:${port}`);
   console.log(`data: ${dataDir}${editToken ? ' (EDIT_TOKEN 보호)' : ' (편집 보호 없음: EDIT_TOKEN 미설정)'}`);
 });
