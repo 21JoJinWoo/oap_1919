@@ -10,6 +10,11 @@ npm install
 npm run dev        # http://localhost:5173 (편집·업로드 가능)
 ```
 
+macOS에서 매번 명령어 없이 쓰기:
+
+- 항상 켜 두기: `./scripts/autostart.sh install` 한 번 실행 → 이후 로그인할 때마다 서버가 백그라운드로 켜지고, 크롬에서 `http://localhost:5173`만 열면 됩니다. 해제는 `uninstall`, 서버 코드 업데이트 후엔 `restart`.
+- 필요할 때만: Finder에서 `start.command` 더블클릭 → 서버가 켜지고 크롬이 열립니다(창을 닫으면 종료).
+
 배포(서버 실행):
 
 ```bash
