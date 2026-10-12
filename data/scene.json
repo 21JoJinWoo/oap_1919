@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-12T07:33:28.720Z",
+  "updatedAt": "2026-10-12T07:56:12.142Z",
   "settings": {
     "background": "#c7ced3",
     "fog": {
@@ -158,106 +158,6 @@
         2,
         2,
         2
-      ],
-      "visible": true,
-      "castShadow": true,
-      "receiveShadow": true
-    },
-    {
-      "id": "obj-wall-북",
-      "name": "담장 북 (임시)",
-      "kind": "primitive",
-      "primitive": "box",
-      "color": "#6f6a62",
-      "position": [
-        0,
-        1.2,
-        -69.5
-      ],
-      "rotation": [
-        0,
-        0,
-        0
-      ],
-      "scale": [
-        123,
-        2.4,
-        0.6
-      ],
-      "visible": true,
-      "castShadow": true,
-      "receiveShadow": true
-    },
-    {
-      "id": "obj-wall-서",
-      "name": "담장 서 (임시)",
-      "kind": "primitive",
-      "primitive": "box",
-      "color": "#6f6a62",
-      "position": [
-        -61.5,
-        1.2,
-        -8
-      ],
-      "rotation": [
-        0,
-        0,
-        0
-      ],
-      "scale": [
-        0.6,
-        2.4,
-        123
-      ],
-      "visible": true,
-      "castShadow": true,
-      "receiveShadow": true
-    },
-    {
-      "id": "obj-wall-동",
-      "name": "담장 동 (임시)",
-      "kind": "primitive",
-      "primitive": "box",
-      "color": "#6f6a62",
-      "position": [
-        61.5,
-        1.2,
-        -8
-      ],
-      "rotation": [
-        0,
-        0,
-        0
-      ],
-      "scale": [
-        0.6,
-        2.4,
-        123
-      ],
-      "visible": true,
-      "castShadow": true,
-      "receiveShadow": true
-    },
-    {
-      "id": "obj-wall-남",
-      "name": "담장 남 (임시)",
-      "kind": "primitive",
-      "primitive": "box",
-      "color": "#6f6a62",
-      "position": [
-        0,
-        1.2,
-        53.5
-      ],
-      "rotation": [
-        0,
-        0,
-        0
-      ],
-      "scale": [
-        123,
-        2.4,
-        0.6
       ],
       "visible": true,
       "castShadow": true,
@@ -585,7 +485,7 @@
       "position": [
         -10,
         0,
-        -44
+        -42
       ],
       "rotation": [
         0,
@@ -700,6 +600,630 @@
         9.81,
         9.81,
         9.81
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-n1",
+      "name": "담장 북1",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        -33.25,
+        0,
+        -52
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-n2",
+      "name": "담장 북2",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        -27.75,
+        0,
+        -52
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-n3",
+      "name": "담장 북3",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        -11.25,
+        0,
+        -52
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-n4",
+      "name": "담장 북4",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        -5.75,
+        0,
+        -52
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-n5",
+      "name": "담장 북5",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        -0.25,
+        0,
+        -52
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-n6",
+      "name": "담장 북6",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        5.25,
+        0,
+        -52
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-n7",
+      "name": "담장 북7",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        10.75,
+        0,
+        -52
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-n8",
+      "name": "담장 북8",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        16.25,
+        0,
+        -52
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-n9",
+      "name": "담장 북9",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        21.75,
+        0,
+        -52
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-n10",
+      "name": "담장 북10",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        27.25,
+        0,
+        -52
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-n11",
+      "name": "담장 북11",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        32.75,
+        0,
+        -52
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-e1",
+      "name": "담장 동1",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        36,
+        0,
+        -49.25
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-w1",
+      "name": "담장 서1",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        -36,
+        0,
+        -49.25
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-e2",
+      "name": "담장 동2",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        36,
+        0,
+        -43.75
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-w2",
+      "name": "담장 서2",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        -36,
+        0,
+        -43.75
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-e3",
+      "name": "담장 동3",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        36,
+        0,
+        -38.25
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-w3",
+      "name": "담장 서3",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        -36,
+        0,
+        -38.25
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-e4",
+      "name": "담장 동4",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        36,
+        0,
+        -32.75
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-w4",
+      "name": "담장 서4",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        -36,
+        0,
+        -32.75
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-e5",
+      "name": "담장 동5",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        36,
+        0,
+        -27.25
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-w5",
+      "name": "담장 서5",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        -36,
+        0,
+        -27.25
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-e6",
+      "name": "담장 동6",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        36,
+        0,
+        -21.75
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-wall-w6",
+      "name": "담장 서6",
+      "kind": "glb",
+      "src": "/models/wall-5828e0197c.glb",
+      "bytes": 809744,
+      "triangles": 16756,
+      "position": [
+        -36,
+        0,
+        -21.75
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        5.5,
+        5.5,
+        5.5
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-gate",
+      "name": "문",
+      "kind": "glb",
+      "src": "/models/door-b0b2832a0d.glb",
+      "bytes": 1751848,
+      "triangles": 28365,
+      "position": [
+        -20,
+        0,
+        -52
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        9,
+        9,
+        9
       ],
       "visible": true,
       "castShadow": true,
