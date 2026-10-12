@@ -2,7 +2,7 @@
 
 export type Vec3 = [number, number, number];
 
-export type PrimitiveKind = 'box' | 'cylinder' | 'cone' | 'sphere' | 'plane' | 'capsule';
+export type PrimitiveKind = 'box' | 'cylinder' | 'cone' | 'sphere' | 'plane' | 'capsule' | 'ring';
 
 export interface SceneObject {
   id: string;
@@ -17,6 +17,11 @@ export interface SceneObject {
   primitive?: PrimitiveKind;
   /** Radial segments for cylinder / cone (8 = octagon). */
   segments?: number;
+  /**
+   * Flat ring / disc / sector (primitive 'ring', unit diameter, lies in XY):
+   * [inner radius as a fraction of the outer, start angle °, sweep °].
+   */
+  arc?: [number, number, number];
   color?: string;
   position: Vec3;
   /** Euler XYZ in degrees. */

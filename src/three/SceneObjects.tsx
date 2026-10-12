@@ -8,6 +8,7 @@ import {
   CylinderGeometry,
   MathUtils,
   PlaneGeometry,
+  RingGeometry,
   SphereGeometry,
   type BufferGeometry,
   type Object3D,
@@ -28,8 +29,8 @@ const deg = (v: [number, number, number]) =>
 
 // Unit-sized geometry shared by every primitive of the same shape; size comes from `scale`.
 const geometryCache = new Map<string, BufferGeometry>();
-function primitiveGeometry(kind: PrimitiveKind, segments = 24): BufferGeometry {
-  const key = `${kind}:${segments}`;
+function primitiveGeometry(kind: PrimitiveKind, segments = 24, arc: [number, number, number] = [0, 0, 360]): BufferGeometry {
+  const key = kind === 'ring' ? `ring:${arc.join(',')}` : `${kind}:${segments}`;
   let g = geometryCache.get(key);
   if (!g) {
     switch (kind) {
@@ -48,6 +49,11 @@ function primitiveGeometry(kind: PrimitiveKind, segments = 24): BufferGeometry {
       case 'plane':
         g = new PlaneGeometry(1, 1);
         break;
+      case 'ring': {
+        const [inner, start, sweep] = arc;
+        g = new RingGeometry(inner * 0.5, 0.5, Math.max(8, Math.round(sweep / 4)), 1, (start * Math.PI) / 180, (sweep * Math.PI) / 180);
+        break;
+      }
       case 'capsule':
         g = new CapsuleGeometry(0.5, 1, 4, 12);
         // CapsuleGeometry(0.5, 1) is 2 units tall; normalise to 1 so scale = size.
@@ -118,7 +124,7 @@ const ObjectNode = memo(function ObjectNode({ obj }: { obj: SceneObject }) {
         </LoadBoundary>
       ) : (
         <mesh
-          geometry={primitiveGeometry(obj.primitive ?? 'box', obj.segments)}
+          geometry={primitiveGeometry(obj.primitive ?? 'box', obj.segments, obj.arc)}
           castShadow={obj.castShadow}
           receiveShadow={obj.receiveShadow}
         >

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-12T06:56:53.849Z",
+  "updatedAt": "2026-10-12T07:12:15.938Z",
   "settings": {
     "background": "#c7ced3",
     "fog": {
@@ -90,9 +90,9 @@
       "primitive": "cylinder",
       "color": "#5a4632",
       "position": [
-        14,
+        29.1,
         1.5,
-        -20
+        -18.6
       ],
       "rotation": [
         0,
@@ -116,9 +116,9 @@
       "primitive": "cone",
       "color": "#4c5a3a",
       "position": [
-        14,
+        29.1,
         5,
-        -20
+        -18.6
       ],
       "rotation": [
         0,
@@ -142,9 +142,9 @@
       "primitive": "cylinder",
       "color": "#5a4632",
       "position": [
-        20,
+        10.6,
         1.5,
-        -10
+        -37.1
       ],
       "rotation": [
         0,
@@ -168,9 +168,9 @@
       "primitive": "cone",
       "color": "#4c5a3a",
       "position": [
-        20,
+        10.6,
         5,
-        -10
+        -37.1
       ],
       "rotation": [
         0,
@@ -194,9 +194,9 @@
       "primitive": "cylinder",
       "color": "#5a4632",
       "position": [
-        -22,
+        -10.6,
         1.5,
-        -6
+        -37.1
       ],
       "rotation": [
         0,
@@ -220,9 +220,9 @@
       "primitive": "cone",
       "color": "#4c5a3a",
       "position": [
-        -22,
+        -10.6,
         5,
-        -6
+        -37.1
       ],
       "rotation": [
         0,
@@ -246,9 +246,9 @@
       "primitive": "cylinder",
       "color": "#5a4632",
       "position": [
-        10,
+        -29.1,
         1.5,
-        -30
+        -18.6
       ],
       "rotation": [
         0,
@@ -272,9 +272,9 @@
       "primitive": "cone",
       "color": "#4c5a3a",
       "position": [
-        10,
+        -29.1,
         5,
-        -30
+        -18.6
       ],
       "rotation": [
         0,
@@ -298,9 +298,9 @@
       "primitive": "cylinder",
       "color": "#5a4632",
       "position": [
-        -26,
+        -10.6,
         1.5,
-        -26
+        21.1
       ],
       "rotation": [
         0,
@@ -324,9 +324,9 @@
       "primitive": "cone",
       "color": "#4c5a3a",
       "position": [
-        -26,
+        -10.6,
         5,
-        -26
+        21.1
       ],
       "rotation": [
         0,
@@ -350,9 +350,9 @@
       "primitive": "cylinder",
       "color": "#5a4632",
       "position": [
-        26,
+        10.6,
         1.5,
-        -28
+        21.1
       ],
       "rotation": [
         0,
@@ -376,9 +376,9 @@
       "primitive": "cone",
       "color": "#4c5a3a",
       "position": [
-        26,
+        10.6,
         5,
-        -28
+        21.1
       ],
       "rotation": [
         0,
@@ -402,9 +402,9 @@
       "primitive": "capsule",
       "color": "#ece8df",
       "position": [
-        -3,
+        5.98,
         0.85,
-        0.5
+        -5.21
       ],
       "rotation": [
         0,
@@ -427,9 +427,9 @@
       "primitive": "capsule",
       "color": "#ece8df",
       "position": [
-        -1.6,
+        4.78,
         0.85,
-        1.2
+        -3.45
       ],
       "rotation": [
         0,
@@ -452,9 +452,9 @@
       "primitive": "capsule",
       "color": "#ece8df",
       "position": [
-        2,
+        3.08,
         0.85,
-        1.5
+        -2.16
       ],
       "rotation": [
         0,
@@ -477,9 +477,9 @@
       "primitive": "capsule",
       "color": "#ece8df",
       "position": [
-        3.4,
+        1.06,
         0.85,
-        0.2
+        -1.49
       ],
       "rotation": [
         0,
@@ -502,9 +502,9 @@
       "primitive": "capsule",
       "color": "#ece8df",
       "position": [
-        -4.6,
+        -1.06,
         0.85,
-        2.4
+        -1.49
       ],
       "rotation": [
         0,
@@ -527,9 +527,9 @@
       "primitive": "capsule",
       "color": "#ece8df",
       "position": [
-        -2.2,
+        -3.08,
         0.85,
-        3.1
+        -2.16
       ],
       "rotation": [
         0,
@@ -552,9 +552,9 @@
       "primitive": "capsule",
       "color": "#ece8df",
       "position": [
-        1,
+        -4.78,
         0.85,
-        3.4
+        -3.45
       ],
       "rotation": [
         0,
@@ -577,9 +577,9 @@
       "primitive": "capsule",
       "color": "#ece8df",
       "position": [
-        3.6,
+        -5.98,
         0.85,
-        2.8
+        -5.21
       ],
       "rotation": [
         0,
@@ -602,9 +602,9 @@
       "primitive": "capsule",
       "color": "#ece8df",
       "position": [
-        5.2,
+        -2.2,
         0.85,
-        1.4
+        0.6
       ],
       "rotation": [
         0,
@@ -627,9 +627,9 @@
       "primitive": "capsule",
       "color": "#ece8df",
       "position": [
-        -6,
+        2.4,
         0.85,
-        0.8
+        0.2
       ],
       "rotation": [
         0,
@@ -652,9 +652,9 @@
       "primitive": "capsule",
       "color": "#ece8df",
       "position": [
-        6.4,
+        -1.6,
         0.85,
-        3.6
+        2.8
       ],
       "rotation": [
         0,
@@ -677,9 +677,9 @@
       "primitive": "capsule",
       "color": "#ece8df",
       "position": [
-        -0.6,
+        1.8,
         0.85,
-        -1.4
+        3.4
       ],
       "rotation": [
         0,
@@ -702,9 +702,9 @@
       "primitive": "capsule",
       "color": "#ece8df",
       "position": [
-        1.8,
+        -2.6,
         0.85,
-        -1
+        5.2
       ],
       "rotation": [
         0,
@@ -727,9 +727,9 @@
       "primitive": "capsule",
       "color": "#ece8df",
       "position": [
-        -2.8,
+        2.2,
         0.85,
-        -1.8
+        6
       ],
       "rotation": [
         0,
@@ -951,25 +951,25 @@
     },
     {
       "id": "obj-grass-01",
-      "name": "화단 2형 서",
+      "name": "잔디 북동 바깥쪽",
       "kind": "glb",
       "src": "/models/grass_2-c2bee384f8.glb",
       "bytes": 1242556,
       "triangles": 22611,
       "position": [
-        -10,
+        10.01,
         0,
-        4
+        -19.71
       ],
       "rotation": [
         0,
-        20,
+        85.35,
         0
       ],
       "scale": [
-        10,
+        19.49,
         3,
-        10
+        19.49
       ],
       "visible": true,
       "castShadow": false,
@@ -977,25 +977,25 @@
     },
     {
       "id": "obj-grass-02",
-      "name": "화단 2형 동",
+      "name": "잔디 북동 안쪽",
       "kind": "glb",
-      "src": "/models/grass_2-c2bee384f8.glb",
-      "bytes": 1242556,
-      "triangles": 22611,
+      "src": "/models/grass_3-0accde7bc3.glb",
+      "bytes": 1218056,
+      "triangles": 24695,
       "position": [
-        10,
+        7.45,
         0,
-        4
+        -15.25
       ],
       "rotation": [
         0,
-        -20,
+        160.25,
         0
       ],
       "scale": [
-        -10,
+        11.47,
         3,
-        10
+        11.47
       ],
       "visible": true,
       "castShadow": false,
@@ -1003,25 +1003,25 @@
     },
     {
       "id": "obj-grass-03",
-      "name": "화단 1형 서",
+      "name": "잔디 북서 바깥쪽",
       "kind": "glb",
       "src": "/models/grass_1-1ba95f6aff.glb",
       "bytes": 1548808,
       "triangles": 38650,
       "position": [
-        -10,
+        -12.15,
         0,
-        -13
+        -18.08
       ],
       "rotation": [
         0,
-        0,
+        167.7,
         0
       ],
       "scale": [
-        8,
+        23.41,
         3,
-        8
+        23.41
       ],
       "visible": true,
       "castShadow": false,
@@ -1029,25 +1029,25 @@
     },
     {
       "id": "obj-grass-04",
-      "name": "화단 1형 동",
+      "name": "잔디 북서 안쪽",
       "kind": "glb",
-      "src": "/models/grass_1-1ba95f6aff.glb",
-      "bytes": 1548808,
-      "triangles": 38650,
+      "src": "/models/grass_2-c2bee384f8.glb",
+      "bytes": 1242556,
+      "triangles": 22611,
       "position": [
-        10,
+        -6.73,
         0,
-        -13
+        -13.76
       ],
       "rotation": [
         0,
-        0,
+        175.35,
         0
       ],
       "scale": [
-        -8,
+        11.2,
         3,
-        8
+        11.2
       ],
       "visible": true,
       "castShadow": false,
@@ -1055,25 +1055,25 @@
     },
     {
       "id": "obj-grass-05",
-      "name": "화단 3형 서",
+      "name": "잔디 남서 바깥쪽",
       "kind": "glb",
       "src": "/models/grass_3-0accde7bc3.glb",
       "bytes": 1218056,
       "triangles": 24695,
       "position": [
-        -15,
+        -12.95,
         0,
-        -30
+        4.61
       ],
       "rotation": [
         0,
-        0,
+        -19.75,
         0
       ],
       "scale": [
-        8,
+        19.95,
         3,
-        8
+        19.95
       ],
       "visible": true,
       "castShadow": false,
@@ -1081,25 +1081,77 @@
     },
     {
       "id": "obj-grass-06",
-      "name": "화단 3형 동",
+      "name": "잔디 남서 안쪽",
+      "kind": "glb",
+      "src": "/models/grass_1-1ba95f6aff.glb",
+      "bytes": 1548808,
+      "triangles": 38650,
+      "position": [
+        -5.8,
+        0,
+        -1.02
+      ],
+      "rotation": [
+        0,
+        -102.3,
+        0
+      ],
+      "scale": [
+        13.46,
+        3,
+        13.46
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-grass-07",
+      "name": "잔디 남동 바깥쪽",
+      "kind": "glb",
+      "src": "/models/grass_1-1ba95f6aff.glb",
+      "bytes": 1548808,
+      "triangles": 38650,
+      "position": [
+        12.15,
+        0,
+        2.08
+      ],
+      "rotation": [
+        0,
+        -12.3,
+        0
+      ],
+      "scale": [
+        23.41,
+        3,
+        23.41
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-grass-08",
+      "name": "잔디 남동 안쪽",
       "kind": "glb",
       "src": "/models/grass_3-0accde7bc3.glb",
       "bytes": 1218056,
       "triangles": 24695,
       "position": [
-        3,
+        7.25,
         0,
-        -30
+        -0.55
       ],
       "rotation": [
         0,
-        0,
+        70.25,
         0
       ],
       "scale": [
-        -8,
+        11.47,
         3,
-        8
+        11.47
       ],
       "visible": true,
       "castShadow": false,
