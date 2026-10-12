@@ -1,0 +1,82 @@
+// Scene document shared by the client and the server.
+
+export type Vec3 = [number, number, number];
+
+export type PrimitiveKind = 'box' | 'cylinder' | 'cone' | 'sphere' | 'plane' | 'capsule';
+
+export interface SceneObject {
+  id: string;
+  name: string;
+  kind: 'glb' | 'primitive';
+  /** GLB url (kind === 'glb'). */
+  src?: string;
+  /** GLB file size in bytes, recorded at upload time. */
+  bytes?: number;
+  /** Triangle count after optimisation, recorded at upload time. */
+  triangles?: number;
+  primitive?: PrimitiveKind;
+  /** Radial segments for cylinder / cone (8 = octagon). */
+  segments?: number;
+  color?: string;
+  position: Vec3;
+  /** Euler XYZ in degrees. */
+  rotation: Vec3;
+  scale: Vec3;
+  visible: boolean;
+  castShadow: boolean;
+  receiveShadow: boolean;
+}
+
+export type LightKind = 'ambient' | 'hemisphere' | 'directional' | 'point';
+
+export interface SceneLight {
+  id: string;
+  name: string;
+  kind: LightKind;
+  color: string;
+  /** Hemisphere ground colour. */
+  groundColor?: string;
+  intensity: number;
+  position: Vec3;
+  castShadow: boolean;
+  visible: boolean;
+}
+
+export interface SceneSettings {
+  background: string;
+  fog: { enabled: boolean; color: string; near: number; far: number };
+  shadows: boolean;
+  /**
+   * The virtual window. The physical screen is mapped onto a rectangle of
+   * `width` world units centred at `center`, looking down -Z rotated by `yawDeg`.
+   */
+  portal: { center: Vec3; width: number; yawDeg: number };
+  /** Physical viewing setup used to convert the tracked face into metres. */
+  viewer: {
+    /** Visible screen width in centimetres. */
+    screenWidthCm: number;
+    /** Horizontal field of view of the webcam in degrees. */
+    webcamFovDeg: number;
+    /** Extra gain applied to sideways / vertical head motion (1 = physically correct). */
+    parallax: number;
+    /** Viewing distance used when no face is tracked, in centimetres. */
+    defaultDistanceCm: number;
+  };
+}
+
+export interface SceneDoc {
+  version: 1;
+  updatedAt: string;
+  settings: SceneSettings;
+  lights: SceneLight[];
+  objects: SceneObject[];
+}
+
+export interface UploadResult {
+  src: string;
+  name: string;
+  bytes: number;
+  originalBytes: number;
+  triangles: number;
+  originalTriangles: number;
+}
