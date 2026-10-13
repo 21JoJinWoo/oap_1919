@@ -44,6 +44,28 @@
       "lat": 37.5711,
       "lon": 126.9883,
       "tz": 9
+    },
+    "cinematic": {
+      "enabled": true,
+      "ao": {
+        "radius": 1.4,
+        "intensity": 4,
+        "falloff": 1.0
+      },
+      "bloom": {
+        "intensity": 0.3,
+        "threshold": 0.9
+      },
+      "grade": {
+        "saturation": 0.84,
+        "contrast": 0.32,
+        "shadowTint": "#4f8296",
+        "highlightTint": "#d49a5a",
+        "tintAmount": 0.2,
+        "vignette": 0.6,
+        "grain": 0.045
+      },
+      "softShadows": 0
     }
   },
   "lights": [

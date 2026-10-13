@@ -74,6 +74,26 @@ export interface SceneSettings {
     /** Compass azimuth of the sun in the prepared HDRI; lets the sky turn with the time-of-day sun. */
     sunAzimuth?: number;
   };
+  /** Post-processing "film look": ambient occlusion, bloom, tone mapping + grading, soft shadows. */
+  cinematic?: {
+    enabled: boolean;
+    /** Screen-space ambient occlusion (N8AO): radius in metres. */
+    ao: { radius: number; intensity: number; falloff: number };
+    /** Glow above a scene-linear luminance threshold. */
+    bloom: { intensity: number; threshold: number };
+    grade: {
+      saturation: number;
+      /** 0–1 blend towards an S-curve. */
+      contrast: number;
+      shadowTint: string;
+      highlightTint: string;
+      tintAmount: number;
+      vignette: number;
+      grain: number;
+    };
+    /** PCSS light size for soft sun shadows (0 = off). */
+    softShadows: number;
+  };
   /** Time of day: drives the sun light, sky / ambient brightness and fog tint. */
   timeOfDay?: {
     /** Local clock hour, e.g. 14.5 = 14:30. */

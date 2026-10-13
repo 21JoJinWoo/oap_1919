@@ -6,6 +6,7 @@ import { HDRLoader } from 'three/examples/jsm/loaders/HDRLoader.js';
 import { assetUrl } from '../lib/assets';
 import type { SceneSettings } from '../types';
 import { useScene } from '../store/sceneStore';
+import { Cinematic } from './Cinematic';
 import { EditorRig, PortalGizmo, StatsProbe, TransformGizmo } from './EditTools';
 import { PortalRig } from './PortalRig';
 import { SceneLights, SceneObjects } from './SceneObjects';
@@ -97,6 +98,7 @@ export function Stage({ onCreated }: { onCreated?: (state: RootState) => void })
       <SceneLights showHelpers={mode === 'edit'} />
       <SceneObjects />
       <TransformGizmo />
+      <Cinematic />
       <StatsProbe />
     </Canvas>
   );
