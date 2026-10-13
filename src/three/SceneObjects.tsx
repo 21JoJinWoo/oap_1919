@@ -15,6 +15,7 @@ import {
 } from 'three';
 import { assetUrl } from '../lib/assets';
 import { useScene } from '../store/sceneStore';
+import { BulletTrail } from './BulletTrail';
 import { useDaylight } from './useDaylight';
 import type { PrimitiveKind, SceneLight, SceneObject } from '../types';
 
@@ -115,7 +116,9 @@ const ObjectNode = memo(function ObjectNode({ obj }: { obj: SceneObject }) {
       visible={obj.visible}
       onClick={onSelect('object', obj.id)}
     >
-      {obj.kind === 'glb' && obj.src ? (
+      {obj.kind === 'trail' && obj.trail ? (
+        <BulletTrail trail={obj.trail} castShadow={obj.castShadow} />
+      ) : obj.kind === 'glb' && obj.src ? (
         <LoadBoundary name={obj.name}>
           <Suspense fallback={<Placeholder color="#ff9a40" />}>
             <GlbModel src={obj.src} castShadow={obj.castShadow} receiveShadow={obj.receiveShadow} />

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-13T04:02:41.553Z",
+  "updatedAt": "2026-10-13T04:16:36.247Z",
   "settings": {
     "background": "#c7ced3",
     "fog": {
@@ -1793,6 +1793,173 @@
       "visible": true,
       "castShadow": true,
       "receiveShadow": true
+    },
+    {
+      "id": "obj-student-run-1",
+      "name": "도망치는 학생 1 (초근경)",
+      "kind": "glb",
+      "src": "/models/run_man_1-3dac908ab4.glb",
+      "bytes": 644788,
+      "triangles": 20965,
+      "position": [
+        -1.16,
+        0,
+        2.723
+      ],
+      "rotation": [
+        0,
+        45,
+        0
+      ],
+      "scale": [
+        1.72,
+        1.72,
+        1.72
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-grandmother",
+      "name": "할머니 (아기 업고 태극기)",
+      "kind": "glb",
+      "src": "/models/grandmother-422a624e6d.glb",
+      "bytes": 1431448,
+      "triangles": 42795,
+      "position": [
+        -2.588,
+        0,
+        -3.781
+      ],
+      "rotation": [
+        0,
+        148.474,
+        0
+      ],
+      "scale": [
+        1.55,
+        1.55,
+        1.55
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-grandfather",
+      "name": "할아버지",
+      "kind": "glb",
+      "src": "/models/grandfather-41400d4ade.glb",
+      "bytes": 1230692,
+      "triangles": 40956,
+      "position": [
+        -1.52,
+        0,
+        -4.239
+      ],
+      "rotation": [
+        0,
+        23.366,
+        0
+      ],
+      "scale": [
+        1.62,
+        1.62,
+        1.62
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-student-run-2",
+      "name": "도망치는 학생 2",
+      "kind": "glb",
+      "src": "/models/run_man_2-249501bc75.glb",
+      "bytes": 925708,
+      "triangles": 32413,
+      "position": [
+        -6.014,
+        0,
+        -7.279
+      ],
+      "rotation": [
+        0,
+        -53,
+        0
+      ],
+      "scale": [
+        1.72,
+        1.72,
+        1.72
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-bullet",
+      "name": "총알 (정지)",
+      "kind": "glb",
+      "src": "/models/bullet-b3af5f8dc6.glb",
+      "bytes": 455960,
+      "triangles": 19615,
+      "position": [
+        -2.432,
+        1.452,
+        3.066
+      ],
+      "rotation": [
+        78.003,
+        23.354,
+        28.633
+      ],
+      "scale": [
+        0.1,
+        0.1,
+        0.1
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": false
+    },
+    {
+      "id": "obj-bullet-trail",
+      "name": "총알 궤적 (정지)",
+      "kind": "trail",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": false,
+      "trail": {
+        "from": [
+          -0.867,
+          1.464,
+          -0.128
+        ],
+        "to": [
+          -2.419,
+          1.452,
+          3.039
+        ],
+        "count": 44,
+        "radius": 0.055
+      }
     }
   ]
 }

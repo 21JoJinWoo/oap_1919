@@ -7,7 +7,7 @@ export type PrimitiveKind = 'box' | 'cylinder' | 'cone' | 'sphere' | 'plane' | '
 export interface SceneObject {
   id: string;
   name: string;
-  kind: 'glb' | 'primitive';
+  kind: 'glb' | 'primitive' | 'trail';
   /** GLB url (kind === 'glb'). */
   src?: string;
   /** GLB file size in bytes, recorded at upload time. */
@@ -22,6 +22,11 @@ export interface SceneObject {
    * [inner radius as a fraction of the outer, start angle °, sweep °].
    */
   arc?: [number, number, number];
+  /**
+   * Frozen bullet shock-wave trail (kind 'trail'): mirror-like bulges from
+   * `from` (muzzle) to `to` (bullet), largest at the bullet, in the object's frame.
+   */
+  trail?: { from: Vec3; to: Vec3; count: number; radius: number };
   color?: string;
   position: Vec3;
   /** Euler XYZ in degrees. */
