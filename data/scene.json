@@ -25,9 +25,7 @@
       "screenWidthCm": 34,
       "webcamFovDeg": 60,
       "parallax": 1.5,
-      "defaultDistanceCm": 60,
-      "invertX": true,
-      "invertY": true
+      "defaultDistanceCm": 60
     },
     "environment": {
       "hdr": "/env/citrus_orchard_road_puresky_4k-env.hdr",
