@@ -32,7 +32,7 @@ EDIT_TOKEN=비밀번호 npm start   # http://localhost:3000
 |---|---|
 | 우상단 `SPATIAL` / `EDIT` (Tab) | 얼굴 추적 포탈 보기 ↔ 자유 카메라 편집 |
 | 좌상단 | 레이어 · 오브젝트 추가(GLB 업로드) · 히스토리 · 설정(포탈, 화면 보정, 안개, 그림자) |
-| 좌하단 | DEPTH(시차 배율) · LOAD(렌더 부하) · DATA(GLB 용량) |
+| 좌하단 | LOAD(렌더 부하) · DATA(GLB 용량) |
 | 하단 중앙 | 카메라 ↔ 마우스 모드 전환 |
 | 우하단 | 카메라 미리보기 · 녹화 |
 
@@ -57,7 +57,7 @@ npm run optimize -- ./my-models --add   # 폴더의 GLB를 최적화해 data/mod
 npx tsx scripts/prepare-hdri.ts source-models/<파일>.hdr --azimuth 205.1
 ```
 
-HDRI를 태양이 지정 방위(북에서 시계방향 °)에 오도록 회전하고, 조명용 1K HDR(`data/env/*-env.hdr`)과 노출을 구워 넣은 하늘 배경(`*-sky.webp`)을 만든 뒤 태양 방향·지평선 색·노출을 출력합니다. 출력값을 `scene.json`의 `settings.environment`(구울 때 쓴 방위는 `sunAzimuth`), 안개 색에 넣습니다. TIME 슬라이더를 움직이면 하늘과 환경광이 태양 방위를 따라 회전합니다(HDRI 속 해의 고도는 바뀌지 않음). 그림자를 만드는 태양광은 1919년 3월 1일 14시 탑골공원 기준(고도 41.2°, 방위 205.1°, NOAA 태양 위치 계산식)입니다.
+HDRI를 태양이 지정 방위(북에서 시계방향 °)에 오도록 회전하고, 조명용 1K HDR(`data/env/*-env.hdr`)과 노출을 구워 넣은 하늘 배경(`*-sky.webp`)을 만든 뒤 태양 방향·지평선 색·노출을 출력합니다. 출력값을 `scene.json`의 `settings.environment`(구울 때 쓴 방위는 `sunAzimuth`), 안개 색에 넣습니다. 시각은 `settings.timeOfDay.hour`에 16.75(16시 45분)로 고정되어 있고, 하늘과 환경광은 그 시각의 태양 방위에 맞춰 회전합니다(HDRI 속 해의 고도는 바뀌지 않음). 그림자를 만드는 태양광은 1919년 3월 1일 16시 45분 탑골공원 기준(고도 17.9°, 방위 244.4°, NOAA 태양 위치 계산식)입니다. 시각 슬라이더(TIME)는 현재 화면에서 빠져 있습니다.
 
 ## 화면 보정
 
