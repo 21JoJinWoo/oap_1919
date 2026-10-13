@@ -1,5 +1,5 @@
 import { Clone, useGLTF } from '@react-three/drei';
-import type { ThreeEvent } from '@react-three/fiber';
+import { useThree, type ThreeEvent, type RootState } from '@react-three/fiber';
 import { Component, memo, Suspense, useMemo, type ReactNode } from 'react';
 import {
   BoxGeometry,
@@ -11,8 +11,12 @@ import {
   RingGeometry,
   SphereGeometry,
   type BufferGeometry,
+  type Material,
+  type Mesh,
   type Object3D,
+  type Texture,
 } from 'three';
+import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
 import { assetUrl } from '../lib/assets';
 import { useScene } from '../store/sceneStore';
 import { BulletTrail } from './BulletTrail';
@@ -76,8 +80,37 @@ function onSelect(type: 'object' | 'light', id: string) {
   };
 }
 
+/** One shared KTX2 (Basis) transcoder; it needs the renderer to pick the GPU block format. */
+let ktx2: KTX2Loader | null = null;
+function ktx2Loader(gl: RootState['gl']) {
+  ktx2 ??= new KTX2Loader().setTranscoderPath(`${import.meta.env.BASE_URL}basis/`).detectSupport(gl);
+  return ktx2;
+}
+
+/** Full anisotropic filtering keeps textures sharp on surfaces seen at a glancing angle (ground, lawns, roofs). */
+function sharpenTextures(root: Object3D, anisotropy: number) {
+  root.traverse((o) => {
+    const mats = (o as Mesh).material;
+    if (!mats) return;
+    for (const m of Array.isArray(mats) ? mats : [mats]) {
+      for (const v of Object.values(m as Material & Record<string, unknown>)) {
+        const t = v as Texture | null;
+        if (t?.isTexture && t.anisotropy !== anisotropy) {
+          t.anisotropy = anisotropy;
+          t.needsUpdate = true;
+        }
+      }
+    }
+  });
+}
+
 function GlbModel({ src, castShadow, receiveShadow }: { src: string; castShadow: boolean; receiveShadow: boolean }) {
-  const { scene } = useGLTF(assetUrl(src));
+  const gl = useThree((s) => s.gl);
+  const { scene } = useGLTF(assetUrl(src), false, true, (loader) =>
+    // drei's loader comes from three-stdlib; it accepts three's KTX2Loader at runtime.
+    loader.setKTX2Loader(ktx2Loader(gl) as unknown as Parameters<typeof loader.setKTX2Loader>[0]),
+  );
+  useMemo(() => sharpenTextures(scene, gl.capabilities.getMaxAnisotropy()), [scene, gl]);
   // Clone shares geometry and materials with the cached original, so repeated
   // placements of one GLB cost no extra GPU memory.
   return <Clone object={scene} castShadow={castShadow} receiveShadow={receiveShadow} />;
