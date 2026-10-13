@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-13T03:28:49.351Z",
+  "updatedAt": "2026-10-13T03:41:11.265Z",
   "settings": {
     "background": "#c7ced3",
     "fog": {
@@ -1516,13 +1516,13 @@
       "bytes": 1614556,
       "triangles": 30037,
       "position": [
-        -6.63,
+        -12.93,
         0,
-        -11.92
+        -10.87
       ],
       "rotation": [
         0,
-        130,
+        34.98,
         0
       ],
       "scale": [
