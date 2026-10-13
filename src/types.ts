@@ -27,6 +27,11 @@ export interface SceneObject {
    * `from` (muzzle) to `to` (bullet), largest at the bullet, in the object's frame.
    */
   trail?: { from: Vec3; to: Vec3; count: number; radius: number };
+  /**
+   * Tiled PBR surface for a primitive plane (KTX2 maps under /env): colour (sRGB), tangent-space
+   * normal (OpenGL convention) and occlusion-roughness packed in R/G. `tile` = metres per repeat.
+   */
+  surface?: { color: string; normal?: string; orm?: string; tile: number; normalScale?: number };
   color?: string;
   position: Vec3;
   /** Euler XYZ in degrees. */

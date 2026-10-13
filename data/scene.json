@@ -83,7 +83,7 @@
   "objects": [
     {
       "id": "obj-ground",
-      "name": "지면",
+      "name": "지면 (흙바닥)",
       "kind": "primitive",
       "primitive": "plane",
       "color": "#8a7f6e",
@@ -104,7 +104,13 @@
       ],
       "visible": true,
       "castShadow": false,
-      "receiveShadow": true
+      "receiveShadow": true,
+      "surface": {
+        "color": "/env/forest_ground_05-color.ktx2",
+        "normal": "/env/forest_ground_05-normal.ktx2",
+        "orm": "/env/forest_ground_05-orm.ktx2",
+        "tile": 2.5
+      }
     },
     {
       "id": "obj-palgakjeong",

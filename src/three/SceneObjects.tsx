@@ -1,5 +1,5 @@
 import { Clone, useGLTF } from '@react-three/drei';
-import { useThree, type ThreeEvent, type RootState } from '@react-three/fiber';
+import { useThree, type ThreeEvent } from '@react-three/fiber';
 import { Component, memo, Suspense, useMemo, type ReactNode } from 'react';
 import {
   BoxGeometry,
@@ -16,10 +16,11 @@ import {
   type Object3D,
   type Texture,
 } from 'three';
-import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
 import { assetUrl } from '../lib/assets';
 import { useScene } from '../store/sceneStore';
 import { BulletTrail } from './BulletTrail';
+import { ktx2Loader } from './ktx2';
+import { SurfaceMaterial } from './SurfaceMaterial';
 import { useDaylight } from './useDaylight';
 import type { PrimitiveKind, SceneLight, SceneObject } from '../types';
 
@@ -80,13 +81,6 @@ function onSelect(type: 'object' | 'light', id: string) {
   };
 }
 
-/** One shared KTX2 (Basis) transcoder; it needs the renderer to pick the GPU block format. */
-let ktx2: KTX2Loader | null = null;
-function ktx2Loader(gl: RootState['gl']) {
-  ktx2 ??= new KTX2Loader().setTranscoderPath(`${import.meta.env.BASE_URL}basis/`).detectSupport(gl);
-  return ktx2;
-}
-
 /** Full anisotropic filtering keeps textures sharp on surfaces seen at a glancing angle (ground, lawns, roofs). */
 function sharpenTextures(root: Object3D, anisotropy: number) {
   root.traverse((o) => {
@@ -116,16 +110,16 @@ function GlbModel({ src, castShadow, receiveShadow }: { src: string; castShadow:
   return <Clone object={scene} castShadow={castShadow} receiveShadow={receiveShadow} />;
 }
 
-class LoadBoundary extends Component<{ children: ReactNode; name: string }, { failed: boolean }> {
+class LoadBoundary extends Component<{ children: ReactNode; name: string; fallback?: ReactNode }, { failed: boolean }> {
   state = { failed: false };
   static getDerivedStateFromError() {
     return { failed: true };
   }
   componentDidCatch(err: unknown) {
-    console.error(`GLB load failed: ${this.props.name}`, err);
+    console.error(`Load failed: ${this.props.name}`, err);
   }
   render() {
-    return this.state.failed ? <Placeholder color="#ff3b3b" /> : this.props.children;
+    return this.state.failed ? (this.props.fallback ?? <Placeholder color="#ff3b3b" />) : this.props.children;
   }
 }
 
@@ -163,7 +157,16 @@ const ObjectNode = memo(function ObjectNode({ obj }: { obj: SceneObject }) {
           castShadow={obj.castShadow}
           receiveShadow={obj.receiveShadow}
         >
-          <meshStandardMaterial color={obj.color ?? '#cccccc'} roughness={0.9} />
+          {obj.surface ? (
+            // A missing or undecodable texture falls back to the flat colour instead of breaking the scene.
+            <LoadBoundary name={obj.name} fallback={<meshStandardMaterial color={obj.color ?? '#cccccc'} roughness={0.9} />}>
+              <Suspense fallback={<meshStandardMaterial color={obj.color ?? '#cccccc'} roughness={0.9} />}>
+                <SurfaceMaterial surface={obj.surface} size={[obj.scale[0], obj.scale[1]]} />
+              </Suspense>
+            </LoadBoundary>
+          ) : (
+            <meshStandardMaterial color={obj.color ?? '#cccccc'} roughness={0.9} />
+          )}
         </mesh>
       )}
     </group>

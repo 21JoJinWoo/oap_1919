@@ -41,7 +41,7 @@ EDIT_TOKEN=비밀번호 npm start   # http://localhost:3000
 ## GLB (Tripo AI 등)
 
 사이트에서 **+ → GLB 파일 업로드**를 하면 서버가 자동으로 최적화합니다.
-중복 제거, 삼각형 15만 개를 넘으면 단순화, 텍스처 WebP 변환(최대 2048px), Meshopt 압축 순서로 처리합니다.
+중복 제거, 삼각형 15만 개를 넘으면 단순화, 텍스처 WebP 변환(최대 2048px), Meshopt 압축 순서로 처리합니다. `TEXTURE_FORMAT=ktx2 MAX_TEXTURE_SIZE=4096`이면 텍스처를 GPU 압축 KTX2(UASTC)로 만들어 4K 텍스처도 그래픽 메모리를 약 1/4만 씁니다(화면에 크게 보이는 모델 10개에 적용).
 명령줄로 한 번에 넣을 수도 있습니다.
 
 ```bash
@@ -58,6 +58,17 @@ npx tsx scripts/prepare-hdri.ts source-models/<파일>.hdr --azimuth 205.1
 ```
 
 HDRI를 태양이 지정 방위(북에서 시계방향 °)에 오도록 회전하고, 조명용 1K HDR(`data/env/*-env.hdr`)과 노출을 구워 넣은 하늘 배경(`*-sky.webp`)을 만든 뒤 태양 방향·지평선 색·노출을 출력합니다. 출력값을 `scene.json`의 `settings.environment`(구울 때 쓴 방위는 `sunAzimuth`), 안개 색에 넣습니다. 시각은 `settings.timeOfDay.hour`에 16.75(16시 45분)로 고정되어 있고, 하늘과 환경광은 그 시각의 태양 방위에 맞춰 회전합니다(HDRI 속 해의 고도는 바뀌지 않음). 그림자를 만드는 태양광은 1919년 3월 1일 16시 45분 탑골공원 기준(고도 17.9°, 방위 244.4°, NOAA 태양 위치 계산식)입니다. 시각 슬라이더(TIME)는 현재 화면에서 빠져 있습니다.
+
+## 바닥 질감
+
+지면은 사진 스캔 PBR 텍스처(Poly Haven `forest_ground_05`, CC0, 4K)를 타일로 깝니다. 색상·노멀(OpenGL)·AO·거칠기 이미지를 GPU 압축 KTX2로 바꿉니다.
+
+```bash
+npx tsx scripts/prepare-surface.ts forest_ground_05 source-models/forest_ground_05_diff_4k.jpg \
+  source-models/forest_ground_05_nor_gl_4k.jpg source-models/forest_ground_05_ao_4k.jpg source-models/forest_ground_05_rough_4k.jpg
+```
+
+`scene.json`에서 지면 오브젝트의 `surface`(`tile` = 한 장이 덮는 미터)로 지정합니다. 넓은 바닥에서 같은 무늬가 반복돼 보이지 않도록, 저주파 노이즈로 영역마다 텍스처 좌표를 무작위로 옮겨 섞습니다(Inigo Quilez, *Texture Repetition*).
 
 ## 화면 보정
 
