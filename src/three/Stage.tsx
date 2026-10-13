@@ -1,7 +1,7 @@
 import { PerformanceMonitor } from '@react-three/drei';
 import { Canvas, useLoader, useThree, type RootState } from '@react-three/fiber';
 import { Suspense, useLayoutEffect, useState } from 'react';
-import { EquirectangularReflectionMapping, SRGBColorSpace, TextureLoader } from 'three';
+import { EquirectangularReflectionMapping, MathUtils, SRGBColorSpace, TextureLoader } from 'three';
 import { HDRLoader } from 'three/examples/jsm/loaders/HDRLoader.js';
 import { assetUrl } from '../lib/assets';
 import type { SceneSettings } from '../types';
@@ -23,7 +23,7 @@ function Atmosphere() {
     <>
       {env ? (
         <Suspense fallback={flat}>
-          <HdriEnvironment env={env} sky={day?.sky ?? 1} />
+          <HdriEnvironment env={env} sky={day?.sky ?? 1} sunAzimuth={day?.azimuth} />
         </Suspense>
       ) : (
         flat
@@ -34,7 +34,15 @@ function Atmosphere() {
 }
 
 /** HDR image-based lighting plus a pre-tone-mapped sky backdrop (sRGB, so three.js skips tone mapping it). */
-function HdriEnvironment({ env, sky: skyLevel }: { env: NonNullable<SceneSettings['environment']>; sky: number }) {
+function HdriEnvironment({
+  env,
+  sky: skyLevel,
+  sunAzimuth,
+}: {
+  env: NonNullable<SceneSettings['environment']>;
+  sky: number;
+  sunAzimuth?: number;
+}) {
   const hdr = useLoader(HDRLoader, assetUrl(env.hdr));
   const sky = useLoader(TextureLoader, assetUrl(env.sky));
   const scene = useThree((s) => s.scene);
@@ -48,13 +56,20 @@ function HdriEnvironment({ env, sky: skyLevel }: { env: NonNullable<SceneSetting
     scene.environmentIntensity = env.intensity * skyLevel;
     scene.backgroundIntensity = skyLevel;
     gl.toneMappingExposure = env.exposure;
+    // Turn sky and lighting about the vertical so the HDRI's sun follows the time-of-day sun.
+    // three.js rotates the content by +y, which moves a compass azimuth A to A - y.
+    const turn = env.sunAzimuth !== undefined && sunAzimuth !== undefined ? MathUtils.degToRad(env.sunAzimuth - sunAzimuth) : 0;
+    scene.backgroundRotation.set(0, turn, 0);
+    scene.environmentRotation.set(0, turn, 0);
     return () => {
       scene.environment = null;
       scene.background = null;
       scene.backgroundIntensity = 1;
+      scene.backgroundRotation.set(0, 0, 0);
+      scene.environmentRotation.set(0, 0, 0);
       gl.toneMappingExposure = 1;
     };
-  }, [hdr, sky, scene, gl, env.intensity, env.exposure, skyLevel]);
+  }, [hdr, sky, scene, gl, env.intensity, env.exposure, env.sunAzimuth, skyLevel, sunAzimuth]);
   return null;
 }
 

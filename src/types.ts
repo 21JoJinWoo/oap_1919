@@ -61,6 +61,8 @@ export interface SceneSettings {
     exposure: number;
     /** Strength of the image-based lighting. */
     intensity: number;
+    /** Compass azimuth of the sun in the prepared HDRI; lets the sky turn with the time-of-day sun. */
+    sunAzimuth?: number;
   };
   /** Time of day: drives the sun light, sky / ambient brightness and fog tint. */
   timeOfDay?: {

@@ -57,7 +57,7 @@ npm run optimize -- ./my-models --add   # 폴더의 GLB를 최적화해 data/mod
 npx tsx scripts/prepare-hdri.ts source-models/<파일>.hdr --azimuth 205.1
 ```
 
-HDRI를 태양이 지정 방위(북에서 시계방향 °)에 오도록 회전하고, 조명용 1K HDR(`data/env/*-env.hdr`)과 노출을 구워 넣은 하늘 배경(`*-sky.webp`)을 만든 뒤 태양 방향·지평선 색·노출을 출력합니다. 출력값을 `scene.json`의 `settings.environment`, 안개 색, 태양광에 넣습니다. 그림자를 만드는 태양광은 1919년 3월 1일 14시 탑골공원 기준(고도 41.2°, 방위 205.1°, NOAA 태양 위치 계산식)입니다.
+HDRI를 태양이 지정 방위(북에서 시계방향 °)에 오도록 회전하고, 조명용 1K HDR(`data/env/*-env.hdr`)과 노출을 구워 넣은 하늘 배경(`*-sky.webp`)을 만든 뒤 태양 방향·지평선 색·노출을 출력합니다. 출력값을 `scene.json`의 `settings.environment`(구울 때 쓴 방위는 `sunAzimuth`), 안개 색에 넣습니다. TIME 슬라이더를 움직이면 하늘과 환경광이 태양 방위를 따라 회전합니다(HDRI 속 해의 고도는 바뀌지 않음). 그림자를 만드는 태양광은 1919년 3월 1일 14시 탑골공원 기준(고도 41.2°, 방위 205.1°, NOAA 태양 위치 계산식)입니다.
 
 ## 화면 보정
 
