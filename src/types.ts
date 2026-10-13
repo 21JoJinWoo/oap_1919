@@ -105,6 +105,8 @@ export interface SceneSettings {
     parallax: number;
     /** Move the virtual eye opposite to the tracked head sideways. */
     invertX?: boolean;
+    /** Move the virtual eye opposite to the tracked head vertically. */
+    invertY?: boolean;
     /** Viewing distance used when no face is tracked, in centimetres. */
     defaultDistanceCm: number;
   };
