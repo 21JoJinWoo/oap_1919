@@ -25,7 +25,8 @@
       "screenWidthCm": 34,
       "webcamFovDeg": 60,
       "parallax": 1.5,
-      "defaultDistanceCm": 60
+      "defaultDistanceCm": 60,
+      "invertX": true
     },
     "environment": {
       "hdr": "/env/citrus_orchard_road_puresky_4k-env.hdr",
@@ -1854,14 +1855,14 @@
       "bytes": 1230692,
       "triangles": 40956,
       "position": [
-        -2.3,
-        0,
-        0.2
+        -1.823,
+        -0.058,
+        -0.446
       ],
       "rotation": [
-        0,
-        -6.106,
-        0
+        -44.664,
+        -8.863,
+        -7.268
       ],
       "scale": [
         1.27,
@@ -1880,13 +1881,13 @@
       "bytes": 925708,
       "triangles": 32413,
       "position": [
-        -6.014,
+        2.56,
         0,
-        -7.279
+        -4.58
       ],
       "rotation": [
         0,
-        -53,
+        90,
         0
       ],
       "scale": [

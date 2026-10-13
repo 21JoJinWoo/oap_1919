@@ -10,8 +10,9 @@ export function eyeInWindow(
   pose: { x: number; y: number; z: number },
 ): { x: number; y: number; z: number } {
   const k = portal.width / (viewer.screenWidthCm / 100);
+  const sx = viewer.invertX ? -1 : 1;
   return {
-    x: pose.x * viewer.parallax * k,
+    x: sx * pose.x * viewer.parallax * k,
     y: pose.y * viewer.parallax * k + (portal.eyeOffsetY ?? 0),
     z: (pose.z * k) / (portal.fovScale ?? 1),
   };

@@ -103,6 +103,8 @@ export interface SceneSettings {
     webcamFovDeg: number;
     /** Extra gain applied to sideways / vertical head motion (1 = physically correct). */
     parallax: number;
+    /** Move the virtual eye opposite to the tracked head sideways. */
+    invertX?: boolean;
     /** Viewing distance used when no face is tracked, in centimetres. */
     defaultDistanceCm: number;
   };
