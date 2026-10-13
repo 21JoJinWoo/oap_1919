@@ -19,6 +19,7 @@
     "@react-three/fiber": "9.8.1",
     "draco3dgltf": "1.5.7",
     "express": "5.2.1",
+    "ktx2-encoder": "^0.5.4",
     "meshoptimizer": "1.3.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
