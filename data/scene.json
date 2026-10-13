@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-13T03:23:12.868Z",
+  "updatedAt": "2026-10-13T03:28:49.351Z",
   "settings": {
     "background": "#c7ced3",
     "fog": {
@@ -24,7 +24,7 @@
     "viewer": {
       "screenWidthCm": 34,
       "webcamFovDeg": 60,
-      "parallax": 1,
+      "parallax": 1.5,
       "defaultDistanceCm": 60
     },
     "environment": {
@@ -1516,13 +1516,13 @@
       "bytes": 1614556,
       "triangles": 30037,
       "position": [
-        -13.28,
+        -6.63,
         0,
-        -8.95
+        -11.92
       ],
       "rotation": [
         0,
-        70,
+        130,
         0
       ],
       "scale": [
