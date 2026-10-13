@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-13T03:41:11.265Z",
+  "updatedAt": "2026-10-13T03:58:31.235Z",
   "settings": {
     "background": "#c7ced3",
     "fog": {
@@ -1522,7 +1522,7 @@
       ],
       "rotation": [
         0,
-        34.98,
+        65.7,
         0
       ],
       "scale": [
