@@ -7,7 +7,7 @@ export type PrimitiveKind = 'box' | 'cylinder' | 'cone' | 'sphere' | 'plane' | '
 export interface SceneObject {
   id: string;
   name: string;
-  kind: 'glb' | 'primitive' | 'trail';
+  kind: 'glb' | 'primitive' | 'trail' | 'fx';
   /** GLB url (kind === 'glb'). */
   src?: string;
   /** GLB file size in bytes, recorded at upload time. */
@@ -27,6 +27,25 @@ export interface SceneObject {
    * `from` (muzzle) to `to` (bullet), largest at the bullet, in the object's frame.
    */
   trail?: { from: Vec3; to: Vec3; count: number; radius: number };
+  /**
+   * Frozen-moment effect (kind 'fx'); the object's box (scale) is the effect's volume.
+   * smoke: billow along local +Z from the origin (muzzle); leaflets: curled paper sheets;
+   * dust: specks in the light. `size` in metres (sprite / sheet width / speck size).
+   */
+  fx?: {
+    type: 'smoke' | 'leaflets' | 'dust';
+    count: number;
+    size: number;
+    seed: number;
+    opacity?: number;
+    /**
+     * World points (faces, the muzzle) that leaflets keep `clear` metres away from — measured to the
+     * sight line from `eye` when given, so no sheet hides them from the viewer.
+     */
+    avoid?: Vec3[];
+    clear?: number;
+    eye?: Vec3;
+  };
   /**
    * Tiled PBR surface for a primitive plane (KTX2 maps under /env): colour (sRGB), tangent-space
    * normal (OpenGL convention) and occlusion-roughness packed in R/G. `tile` = metres per repeat.

@@ -19,6 +19,7 @@ import {
 import { assetUrl } from '../lib/assets';
 import { useScene } from '../store/sceneStore';
 import { BulletTrail } from './BulletTrail';
+import { FrozenFx } from './FrozenFx';
 import { ktx2Loader } from './ktx2';
 import { SurfaceMaterial } from './SurfaceMaterial';
 import { useDaylight } from './useDaylight';
@@ -143,7 +144,9 @@ const ObjectNode = memo(function ObjectNode({ obj }: { obj: SceneObject }) {
       visible={obj.visible}
       onClick={onSelect('object', obj.id)}
     >
-      {obj.kind === 'trail' && obj.trail ? (
+      {obj.kind === 'fx' && obj.fx ? (
+        <FrozenFx fx={obj.fx} scale={obj.scale} origin={obj.position} />
+      ) : obj.kind === 'trail' && obj.trail ? (
         <BulletTrail trail={obj.trail} castShadow={obj.castShadow} />
       ) : obj.kind === 'glb' && obj.src ? (
         <LoadBoundary name={obj.name}>

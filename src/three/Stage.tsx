@@ -7,6 +7,7 @@ import { assetUrl } from '../lib/assets';
 import type { SceneSettings } from '../types';
 import { useScene } from '../store/sceneStore';
 import { Cinematic } from './Cinematic';
+import './heightFog';
 import { EditorRig, PortalGizmo, StatsProbe, TransformGizmo } from './EditTools';
 import { PortalRig } from './PortalRig';
 import { SceneLights, SceneObjects } from './SceneObjects';

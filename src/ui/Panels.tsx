@@ -48,7 +48,7 @@ export function LayersPanel() {
           onClick={() => select({ type: 'object', id: o.id })}
         >
           <span className="grow">{o.name}</span>
-          <span className="tag">{o.kind === 'glb' ? (o.bytes ? formatBytes(o.bytes) : 'glb') : o.kind === 'trail' ? 'trail' : o.primitive}</span>
+          <span className="tag">{o.kind === 'glb' ? (o.bytes ? formatBytes(o.bytes) : 'glb') : o.kind === 'trail' || o.kind === 'fx' ? (o.fx?.type ?? 'trail') : o.primitive}</span>
           <button
             className="mini"
             title="표시/숨김"
