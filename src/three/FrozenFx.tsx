@@ -151,11 +151,36 @@ void main() {
 }
 `;
 
-/**
- * Gun smoke frozen just after the shot: a dense billow at the muzzle thinning along the line of
- * fire (local +Z, `scale.z` metres long, `scale.x` wide). Billboards, sorted back to front once.
- */
-function Smoke({ fx, scale }: { fx: Fx; scale: Vec3 }) {
+interface Billboard {
+  center: [number, number, number];
+  size: number;
+  rot: number;
+  alpha: number;
+  shade: number;
+}
+
+function billboardGeometry(items: Billboard[]) {
+  const g = new InstancedBufferGeometry().copy(new PlaneGeometry(1, 1) as unknown as InstancedBufferGeometry);
+  const n = items.length;
+  const center = new Float32Array(n * 3), size = new Float32Array(n), rot = new Float32Array(n), alpha = new Float32Array(n), shade = new Float32Array(n);
+  items.forEach((b, i) => {
+    center.set(b.center, i * 3);
+    size[i] = b.size;
+    rot[i] = b.rot;
+    alpha[i] = b.alpha;
+    shade[i] = b.shade;
+  });
+  g.setAttribute('aCenter', new InstancedBufferAttribute(center, 3));
+  g.setAttribute('aSize', new InstancedBufferAttribute(size, 1));
+  g.setAttribute('aRot', new InstancedBufferAttribute(rot, 1));
+  g.setAttribute('aAlpha', new InstancedBufferAttribute(alpha, 1));
+  g.setAttribute('aShade', new InstancedBufferAttribute(shade, 1));
+  g.instanceCount = n;
+  return g;
+}
+
+/** Soft, sun-lit billows (gun smoke, kicked-up dirt). Colours are scene-linear, graded with the rest. */
+function Billows({ items, lit, shade, sunMix, renderOrder }: { items: Billboard[]; lit: string; shade: string; sunMix: number; renderOrder: number }) {
   const day = useDaylight();
   const material = useMemo(
     () =>
@@ -168,38 +193,146 @@ function Smoke({ fx, scale }: { fx: Fx; scale: Vec3 }) {
       }),
     [],
   );
-  const geometry = useMemo(() => {
+  const geometry = useMemo(() => billboardGeometry(items), [items]);
+  const sun = day?.sun ?? 1, sky = day?.sky ?? 1;
+  material.uniforms.litColor.value.set(lit).lerp(new Color(day?.sunColor ?? '#ffffff'), sunMix).multiplyScalar(0.6 * sun + 0.3 * sky);
+  material.uniforms.shadeColor.value.set(shade).multiplyScalar(0.4 * sky);
+  return <mesh geometry={geometry} material={material} frustumCulled={false} renderOrder={renderOrder} />;
+}
+
+/**
+ * Gun smoke frozen just after the shot: a dense billow at the muzzle thinning along the line of
+ * fire (local +Z, `scale.z` metres long, `scale.x` wide).
+ */
+function Smoke({ fx, scale }: { fx: Fx; scale: Vec3 }) {
+  const items = useMemo(() => {
     const r = rng(fx.seed);
-    const g = new InstancedBufferGeometry().copy(new PlaneGeometry(1, 1) as unknown as InstancedBufferGeometry);
-    const n = fx.count;
-    const center = new Float32Array(n * 3), size = new Float32Array(n), rot = new Float32Array(n), alpha = new Float32Array(n), shade = new Float32Array(n);
-    for (let i = 0; i < n; i++) {
+    return Array.from({ length: fx.count }, (): Billboard => {
       const t = Math.pow(r(), 1.8); // most gas stays near the muzzle
       const spread = (0.05 + 0.3 * t) * scale[0];
-      center[i * 3] = gauss(r) * spread * 0.5;
-      center[i * 3 + 1] = gauss(r) * spread * 0.45 + t * 0.06; // warm gas rises a little
-      center[i * 3 + 2] = t * scale[2];
-      size[i] = fx.size * (0.4 + 0.9 * t) * (0.7 + 0.6 * r());
-      rot[i] = r() * Math.PI * 2;
-      alpha[i] = (fx.opacity ?? 0.22) * (1 - 0.65 * t) * (0.6 + 0.4 * r());
-      shade[i] = 0.35 + 0.65 * r();
-    }
-    g.setAttribute('aCenter', new InstancedBufferAttribute(center, 3));
-    g.setAttribute('aSize', new InstancedBufferAttribute(size, 1));
-    g.setAttribute('aRot', new InstancedBufferAttribute(rot, 1));
-    g.setAttribute('aAlpha', new InstancedBufferAttribute(alpha, 1));
-    g.setAttribute('aShade', new InstancedBufferAttribute(shade, 1));
-    g.instanceCount = n;
-    return g;
+      return {
+        center: [gauss(r) * spread * 0.5, gauss(r) * spread * 0.45 + t * 0.06, t * scale[2]], // warm gas rises a little
+        size: fx.size * (0.4 + 0.9 * t) * (0.7 + 0.6 * r()),
+        rot: r() * Math.PI * 2,
+        alpha: (fx.opacity ?? 0.22) * (1 - 0.65 * t) * (0.6 + 0.4 * r()),
+        shade: 0.35 + 0.65 * r(),
+      };
+    });
   }, [fx.seed, fx.count, fx.size, fx.opacity, scale[0], scale[2]]);
-
-  // Smoke is lit by the low sun and the sky; scene-linear values, graded with everything else.
-  const sun = day?.sun ?? 1, sky = day?.sky ?? 1;
   // Smokeless-powder gas is pale grey; the low sun only warms it slightly.
-  material.uniforms.litColor.value.set('#e8e6e2').lerp(new Color(day?.sunColor ?? '#ffffff'), 0.25).multiplyScalar(0.6 * sun + 0.3 * sky);
-  material.uniforms.shadeColor.value.set('#9aa0a6').multiplyScalar(0.4 * sky);
+  return <Billows items={items} lit="#e8e6e2" shade="#9aa0a6" sunMix={0.25} renderOrder={2} />;
+}
 
-  return <mesh geometry={geometry} material={material} frustumCulled={false} renderOrder={2} />;
+/**
+ * Dirt kicked up by running feet and hooves: low billows clustered behind each `sources` point
+ * (world, at ground level), plus a thin drifting layer across the object's box.
+ */
+function GroundDust({ fx, scale, origin }: { fx: Fx; scale: Vec3; origin: Vec3 }) {
+  const items = useMemo(() => {
+    const r = rng(fx.seed);
+    const sources = (fx.sources ?? []).map((p) => [p[0] - origin[0], p[2] - origin[2]] as const);
+    const out: Billboard[] = [];
+    for (let i = 0; i < fx.count; i++) {
+      const clustered = sources.length > 0 && r() < 0.75;
+      const [cx, cz] = clustered ? sources[Math.floor(r() * sources.length)] : [(r() - 0.5) * scale[0], (r() - 0.5) * scale[2]];
+      const spread = clustered ? 0.55 : 0.3;
+      const size = fx.size * (clustered ? 0.6 + 0.9 * r() : 1 + 1.5 * r());
+      out.push({
+        center: [cx + gauss(r) * spread, size * 0.32 + Math.abs(gauss(r)) * (clustered ? 0.18 : 0.06) - origin[1], cz + gauss(r) * spread],
+        size,
+        rot: r() * Math.PI * 2,
+        alpha: (fx.opacity ?? 0.2) * (clustered ? 0.6 + 0.4 * r() : 0.35 + 0.3 * r()),
+        shade: 0.3 + 0.7 * r(),
+      });
+    }
+    return out;
+  }, [fx.seed, fx.count, fx.size, fx.opacity, fx.sources, origin, scale[0], scale[2]]);
+  // Dry, sun-bleached topsoil.
+  return <Billows items={items} lit="#c9b08c" shade="#7d6a55" sunMix={0.35} renderOrder={1} />;
+}
+
+/** Star-shaped glow for the muzzle flash: hot core with a few sharp spikes. */
+const flashTexture = (() => {
+  let tex: CanvasTexture | null = null;
+  return () => {
+    if (tex) return tex;
+    const N = 128;
+    const [c, g] = canvas(N, N);
+    const img = g.createImageData(N, N);
+    for (let y = 0; y < N; y++)
+      for (let x = 0; x < N; x++) {
+        const dx = (x + 0.5) / N - 0.5, dy = (y + 0.5) / N - 0.5;
+        const d = Math.hypot(dx, dy) * 2;
+        const ang = Math.atan2(dy, dx);
+        const spikes = Math.pow(Math.abs(Math.cos(ang * 3)), 24) * Math.max(0, 1 - d) * 0.8;
+        const a = Math.min(1, Math.exp(-d * d * 9) + spikes + Math.max(0, 1 - d) ** 3 * 0.25);
+        const i = (y * N + x) * 4;
+        img.data[i] = img.data[i + 1] = img.data[i + 2] = 255;
+        img.data[i + 3] = Math.round(a * 255);
+      }
+    g.putImageData(img, 0, 0);
+    tex = new CanvasTexture(c);
+    return tex;
+  };
+})();
+
+const FLASH_FRAG = /* glsl */ `
+uniform sampler2D map;
+uniform vec3 hot;
+uniform vec3 cool;
+varying vec2 vUv;
+varying float vAlpha;
+varying float vShade;
+void main() {
+  float a = texture2D(map, vUv).a * vAlpha;
+  if (a < 0.002) discard;
+  // vShade: 1 = white-hot core, 0 = orange flame tips. Bright enough to feed the bloom pass.
+  gl_FragColor = vec4(mix(cool, hot, vShade) * a, 1.0);
+}
+`;
+
+/**
+ * Muzzle flash caught at its peak: a white-hot core at the origin, a tongue of flame along +Z
+ * and a few side petals, additively blended, plus a warm point light on the shooter.
+ */
+function Flash({ fx, scale }: { fx: Fx; scale: Vec3 }) {
+  const material = useMemo(
+    () =>
+      new ShaderMaterial({
+        vertexShader: BILLBOARD_VERT,
+        fragmentShader: FLASH_FRAG,
+        uniforms: {
+          map: { value: flashTexture() },
+          hot: { value: new Color('#fff4d6').multiplyScalar(14) },
+          cool: { value: new Color('#ff7a1f').multiplyScalar(6) },
+        },
+        transparent: true,
+        depthWrite: false,
+        blending: AdditiveBlending,
+      }),
+    [],
+  );
+  const geometry = useMemo(() => {
+    const r = rng(fx.seed);
+    const k = fx.opacity ?? 1;
+    const items: Billboard[] = [{ center: [0, 0, 0.02], size: fx.size, rot: r() * 6.28, alpha: 0.9 * k, shade: 1 }];
+    for (let i = 1; i <= 5; i++) {
+      const t = i / 5;
+      items.push({ center: [gauss(r) * 0.01, gauss(r) * 0.01, t * scale[2]], size: fx.size * (1.1 - 0.8 * t), rot: r() * 6.28, alpha: (0.75 - 0.5 * t) * k, shade: 1 - t });
+    }
+    for (let i = 0; i < 4; i++) {
+      const a = (i / 4) * Math.PI * 2 + r();
+      const d = fx.size * 0.35;
+      items.push({ center: [Math.cos(a) * d, Math.sin(a) * d, 0.04], size: fx.size * 0.45, rot: r() * 6.28, alpha: 0.35 * k, shade: 0.3 });
+    }
+    return billboardGeometry(items);
+  }, [fx.seed, fx.size, fx.opacity, scale[2]]);
+  return (
+    <>
+      <mesh geometry={geometry} material={material} frustumCulled={false} renderOrder={4} />
+      <pointLight position={[0, 0, 0.1]} color="#ffb070" intensity={(fx.opacity ?? 1) * 2.5} distance={3} decay={2} />
+    </>
+  );
 }
 
 /** Sheets of the declaration caught mid-air, each gently curled; volume = the object's box. */
@@ -297,6 +430,8 @@ export function FrozenFx({ fx, scale, origin }: { fx: Fx; scale: Vec3; origin: V
   return (
     <group scale={inv}>
       {fx.type === 'smoke' && <Smoke fx={fx} scale={scale} />}
+      {fx.type === 'flash' && <Flash fx={fx} scale={scale} />}
+      {fx.type === 'groundDust' && <GroundDust fx={fx} scale={scale} origin={origin} />}
       {fx.type === 'leaflets' && <Leaflets fx={fx} scale={scale} origin={origin} />}
       {fx.type === 'dust' && <Dust fx={fx} scale={scale} />}
     </group>

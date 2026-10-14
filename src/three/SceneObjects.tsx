@@ -1,6 +1,6 @@
 import { Clone, useGLTF } from '@react-three/drei';
-import { useThree, type ThreeEvent } from '@react-three/fiber';
-import { Component, memo, Suspense, useMemo, type ReactNode } from 'react';
+import { useFrame, useThree, type ThreeEvent } from '@react-three/fiber';
+import { Component, memo, Suspense, useMemo, useRef, type ReactNode } from 'react';
 import {
   BoxGeometry,
   CapsuleGeometry,
@@ -11,6 +11,8 @@ import {
   RingGeometry,
   SphereGeometry,
   type BufferGeometry,
+  type Group,
+  Vector3,
   type Material,
   type Mesh,
   type Object3D,
@@ -111,6 +113,16 @@ function GlbModel({ src, castShadow, receiveShadow }: { src: string; castShadow:
   return <Clone object={scene} castShadow={castShadow} receiveShadow={receiveShadow} />;
 }
 
+/** Rotates its children about a local axis at a steady rate (no-op without `spin`). */
+function Spin({ spin, children }: { spin?: SceneObject['spin']; children: ReactNode }) {
+  const ref = useRef<Group>(null);
+  const axis = useMemo(() => (spin ? new Vector3(...spin.axis).normalize() : null), [spin]);
+  useFrame(({ clock }) => {
+    if (ref.current && axis && spin) ref.current.quaternion.setFromAxisAngle(axis, clock.elapsedTime * spin.rps * Math.PI * 2);
+  });
+  return <group ref={ref}>{children}</group>;
+}
+
 class LoadBoundary extends Component<{ children: ReactNode; name: string; fallback?: ReactNode }, { failed: boolean }> {
   state = { failed: false };
   static getDerivedStateFromError() {
@@ -151,7 +163,9 @@ const ObjectNode = memo(function ObjectNode({ obj }: { obj: SceneObject }) {
       ) : obj.kind === 'glb' && obj.src ? (
         <LoadBoundary name={obj.name}>
           <Suspense fallback={<Placeholder color="#ff9a40" />}>
-            <GlbModel src={obj.src} castShadow={obj.castShadow} receiveShadow={obj.receiveShadow} />
+            <Spin spin={obj.spin}>
+              <GlbModel src={obj.src} castShadow={obj.castShadow} receiveShadow={obj.receiveShadow} />
+            </Spin>
           </Suspense>
         </LoadBoundary>
       ) : (

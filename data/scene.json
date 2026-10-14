@@ -1950,7 +1950,15 @@
       ],
       "visible": true,
       "castShadow": true,
-      "receiveShadow": false
+      "receiveShadow": false,
+      "spin": {
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "rps": 2.5
+      }
     },
     {
       "id": "obj-bullet-trail",
@@ -1986,7 +1994,9 @@
           4.652
         ],
         "count": 26,
-        "radius": 0.024
+        "radius": 0.024,
+        "flow": 0.8,
+        "streaks": 14
       }
     },
     {
@@ -2120,6 +2130,108 @@
       "visible": true,
       "castShadow": false,
       "receiveShadow": false
+    },
+    {
+      "kind": "fx",
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": false,
+      "id": "fx-muzzle-flash",
+      "name": "총구 화염",
+      "position": [
+        -0.68,
+        1.466,
+        -0.485
+      ],
+      "rotation": [
+        0,
+        -18.2,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        0.35
+      ],
+      "fx": {
+        "type": "flash",
+        "count": 1,
+        "size": 0.28,
+        "seed": 2,
+        "opacity": 1
+      }
+    },
+    {
+      "kind": "fx",
+      "visible": true,
+      "castShadow": false,
+      "receiveShadow": false,
+      "id": "fx-ground-dust",
+      "name": "바닥 흙먼지",
+      "position": [
+        0,
+        0,
+        -4
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        30,
+        1,
+        22
+      ],
+      "fx": {
+        "type": "groundDust",
+        "count": 420,
+        "size": 0.7,
+        "seed": 9,
+        "opacity": 0.38,
+        "sources": [
+          [
+            1.37,
+            0,
+            1.72
+          ],
+          [
+            1.96,
+            0,
+            -4.58
+          ],
+          [
+            -3.47,
+            0,
+            -3.8
+          ],
+          [
+            -1.75,
+            0,
+            -0.2
+          ],
+          [
+            6.3,
+            0,
+            -12.5
+          ],
+          [
+            -12.93,
+            0,
+            -10.87
+          ],
+          [
+            -14.0,
+            0,
+            -11.4
+          ],
+          [
+            -4.38,
+            0,
+            -10.66
+          ]
+        ]
+      }
     }
   ]
 }
