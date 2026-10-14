@@ -2235,6 +2235,240 @@
           ]
         ]
       }
+    },
+    {
+      "id": "obj-tree-wall-01",
+      "name": "담장 앞 나무 1",
+      "kind": "glb",
+      "src": "/models/tree_1-d6bea5eb2d.glb",
+      "bytes": 31415072,
+      "triangles": 32911,
+      "position": [
+        -29,
+        0,
+        -48.5
+      ],
+      "rotation": [
+        0,
+        30,
+        0
+      ],
+      "scale": [
+        8.6,
+        8.6,
+        8.6
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-tree-wall-02",
+      "name": "담장 앞 나무 2",
+      "kind": "glb",
+      "src": "/models/tree_2-1b269460d6.glb",
+      "bytes": 11133892,
+      "triangles": 41643,
+      "position": [
+        -20.5,
+        0,
+        -47.8
+      ],
+      "rotation": [
+        0,
+        160,
+        0
+      ],
+      "scale": [
+        9.0,
+        9.0,
+        9.0
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-tree-wall-03",
+      "name": "담장 앞 나무 3",
+      "kind": "glb",
+      "src": "/models/tree_1-d6bea5eb2d.glb",
+      "bytes": 31415072,
+      "triangles": 32911,
+      "position": [
+        -13.5,
+        0,
+        -49
+      ],
+      "rotation": [
+        0,
+        250,
+        0
+      ],
+      "scale": [
+        8.0,
+        8.0,
+        8.0
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-tree-wall-04",
+      "name": "담장 앞 나무 4",
+      "kind": "glb",
+      "src": "/models/tree_2-1b269460d6.glb",
+      "bytes": 11133892,
+      "triangles": 41643,
+      "position": [
+        2.5,
+        0,
+        -48.5
+      ],
+      "rotation": [
+        0,
+        95,
+        0
+      ],
+      "scale": [
+        8.8,
+        8.8,
+        8.8
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-tree-wall-05",
+      "name": "담장 앞 나무 5",
+      "kind": "glb",
+      "src": "/models/tree_1-d6bea5eb2d.glb",
+      "bytes": 31415072,
+      "triangles": 32911,
+      "position": [
+        10.5,
+        0,
+        -47.5
+      ],
+      "rotation": [
+        0,
+        300,
+        0
+      ],
+      "scale": [
+        9.2,
+        9.2,
+        9.2
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-tree-wall-06",
+      "name": "담장 앞 나무 6",
+      "kind": "glb",
+      "src": "/models/tree_2-1b269460d6.glb",
+      "bytes": 11133892,
+      "triangles": 41643,
+      "position": [
+        15,
+        0,
+        -49
+      ],
+      "rotation": [
+        0,
+        20,
+        0
+      ],
+      "scale": [
+        7.8,
+        7.8,
+        7.8
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-tree-wall-07",
+      "name": "담장 앞 나무 7",
+      "kind": "glb",
+      "src": "/models/tree_1-d6bea5eb2d.glb",
+      "bytes": 31415072,
+      "triangles": 32911,
+      "position": [
+        31,
+        0,
+        -48.5
+      ],
+      "rotation": [
+        0,
+        140,
+        0
+      ],
+      "scale": [
+        8.4,
+        8.4,
+        8.4
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-tree-wall-08",
+      "name": "담장 앞 나무 8",
+      "kind": "glb",
+      "src": "/models/tree_2-1b269460d6.glb",
+      "bytes": 11133892,
+      "triangles": 41643,
+      "position": [
+        -33,
+        0,
+        -39
+      ],
+      "rotation": [
+        0,
+        210,
+        0
+      ],
+      "scale": [
+        8.2,
+        8.2,
+        8.2
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-tree-wall-09",
+      "name": "담장 앞 나무 9",
+      "kind": "glb",
+      "src": "/models/tree_2-1b269460d6.glb",
+      "bytes": 11133892,
+      "triangles": 41643,
+      "position": [
+        -4.5,
+        0,
+        -48.8
+      ],
+      "rotation": [
+        0,
+        310,
+        0
+      ],
+      "scale": [
+        9.2,
+        9.2,
+        9.2
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": true
     }
   ]
 }
