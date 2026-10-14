@@ -2033,9 +2033,9 @@
       "id": "fx-leaflets",
       "name": "흩날리는 선언서",
       "position": [
-        0.5,
-        2.4,
-        -3.5
+        -1,
+        4.8,
+        -5
       ],
       "rotation": [
         0,
@@ -2043,13 +2043,13 @@
         0
       ],
       "scale": [
-        11,
-        2.8,
-        8
+        26,
+        8.4,
+        12
       ],
       "fx": {
         "type": "leaflets",
-        "count": 40,
+        "count": 300,
         "size": 0.2,
         "seed": 11,
         "avoid": [
@@ -2115,17 +2115,17 @@
         0
       ],
       "scale": [
-        12.5,
-        7.6,
-        11.5
+        47,
+        31,
+        12.5
       ],
       "fx": {
         "type": "dust",
-        "count": 3000,
+        "count": 24000,
         "size": 0.03,
         "seed": 5,
         "opacity": 0.8,
-        "taper": 0.14,
+        "taper": 0.08,
         "drift": 0.06
       },
       "kind": "fx",
@@ -2157,10 +2157,11 @@
       ],
       "fx": {
         "type": "flash",
-        "count": 1,
+        "count": 48,
         "size": 0.28,
         "seed": 2,
-        "opacity": 1
+        "opacity": 1,
+        "period": 1.6
       }
     },
     {

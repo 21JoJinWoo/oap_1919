@@ -1,4 +1,4 @@
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import {
   AdditiveBlending,
@@ -12,6 +12,7 @@ import {
   type InstancedMesh,
   Matrix4,
   PlaneGeometry,
+  type PointLight,
   PointsMaterial,
   Quaternion,
   ShaderMaterial,
@@ -278,15 +279,39 @@ const flashTexture = (() => {
   };
 })();
 
-const FLASH_FRAG = /* glsl */ `
-uniform sampler2D map;
-uniform vec3 hot;
-uniform vec3 cool;
+const FLASH_VERT = /* glsl */ `
+attribute vec3 aCenter;
+attribute float aSize;
+attribute float aRot;
+attribute float aAlpha;
+attribute float aShade;
+uniform float uGain;
+uniform float uSpin;
 varying vec2 vUv;
 varying float vAlpha;
 varying float vShade;
 void main() {
-  float a = texture2D(map, vUv).a * vAlpha;
+  vUv = uv;
+  vAlpha = aAlpha;
+  vShade = aShade;
+  vec4 mv = modelViewMatrix * vec4(aCenter, 1.0);
+  // Each shot flares the sprites and turns the star so no two flashes look alike.
+  float a = aRot + uSpin * (1.0 + aShade);
+  float c = cos(a), s = sin(a);
+  mv.xy += mat2(c, s, -s, c) * position.xy * aSize * (0.55 + 0.45 * uGain);
+  gl_Position = projectionMatrix * mv;
+}
+`;
+const FLASH_FRAG = /* glsl */ `
+uniform sampler2D map;
+uniform vec3 hot;
+uniform vec3 cool;
+uniform float uGain;
+varying vec2 vUv;
+varying float vAlpha;
+varying float vShade;
+void main() {
+  float a = texture2D(map, vUv).a * vAlpha * uGain;
   if (a < 0.002) discard;
   // vShade: 1 = white-hot core, 0 = orange flame tips. Bright enough to feed the bloom pass.
   gl_FragColor = vec4(mix(cool, hot, vShade) * a, 1.0);
@@ -294,25 +319,76 @@ void main() {
 `;
 
 /**
- * Muzzle flash caught at its peak: a white-hot core at the origin, a tongue of flame along +Z
- * and a few side petals, additively blended, plus a warm point light on the shooter.
+ * Sparks thrown out of the muzzle on every shot: burning powder grains flying forward in a cone,
+ * slowing, dropping and dimming from white-yellow to orange. Animated entirely in the shader from
+ * the time since the last shot.
+ */
+const SPARK_VERT = /* glsl */ `
+attribute vec4 aSeed; // cone x, cone y, speed (m/s), life (s)
+attribute float aDelay;
+uniform float uAge;
+uniform float uPx;
+varying float vFade;
+void main() {
+  float age = uAge - aDelay;
+  float life = aSeed.w;
+  vFade = (age < 0.0 || age > life) ? 0.0 : 1.0 - age / life;
+  vec3 dir = normalize(vec3(aSeed.x, aSeed.y, 1.0));
+  // Air drag (exponential slow-down) and gravity, in the effect's frame (+Z = line of fire).
+  float travel = aSeed.z * (1.0 - exp(-age * 5.0)) / 5.0;
+  vec3 p = dir * travel + vec3(0.0, -2.5 * age * age, 0.0);
+  vec4 mv = modelViewMatrix * vec4(p, 1.0);
+  gl_Position = projectionMatrix * mv;
+  gl_PointSize = vFade > 0.0 ? uPx * 0.012 * (0.4 + 0.6 * vFade) / -mv.z : 0.0;
+}
+`;
+const SPARK_FRAG = /* glsl */ `
+varying float vFade;
+void main() {
+  if (vFade <= 0.0) discard;
+  float d = length(gl_PointCoord - 0.5) * 2.0;
+  float a = smoothstep(1.0, 0.0, d);
+  vec3 c = mix(vec3(1.0, 0.35, 0.06), vec3(1.0, 0.85, 0.55), vFade) * 10.0;
+  gl_FragColor = vec4(c * a * vFade, 1.0);
+}
+`;
+
+const hashT = (n: number) => {
+  const s = Math.sin(n * 91.345) * 47453.5453;
+  return s - Math.floor(s);
+};
+
+/**
+ * Muzzle flash, firing on a loop every `period` seconds: a white-hot core, a tongue of flame along
+ * +Z and side petals that flare at the shot and die away within a tenth of a second with a ragged
+ * flicker, sparks thrown forward, and a warm point light pulsing in step on the shooter.
+ * Between shots a faint ember glow stays so the muzzle still reads as hot.
  */
 function Flash({ fx, scale }: { fx: Fx; scale: Vec3 }) {
+  const size = useThree((s) => s.size);
+  const dpr = useThree((s) => s.viewport.dpr);
+  const light = useRef<PointLight>(null);
+  const flashUniforms = useMemo(
+    () => ({
+      map: { value: flashTexture() },
+      hot: { value: new Color('#fff4d6').multiplyScalar(14) },
+      cool: { value: new Color('#ff7a1f').multiplyScalar(6) },
+      uGain: { value: 1 },
+      uSpin: { value: 0 },
+    }),
+    [],
+  );
   const material = useMemo(
     () =>
       new ShaderMaterial({
-        vertexShader: BILLBOARD_VERT,
+        vertexShader: FLASH_VERT,
         fragmentShader: FLASH_FRAG,
-        uniforms: {
-          map: { value: flashTexture() },
-          hot: { value: new Color('#fff4d6').multiplyScalar(14) },
-          cool: { value: new Color('#ff7a1f').multiplyScalar(6) },
-        },
+        uniforms: flashUniforms,
         transparent: true,
         depthWrite: false,
         blending: AdditiveBlending,
       }),
-    [],
+    [flashUniforms],
   );
   const geometry = useMemo(() => {
     const r = rng(fx.seed);
@@ -329,10 +405,65 @@ function Flash({ fx, scale }: { fx: Fx; scale: Vec3 }) {
     }
     return billboardGeometry(items);
   }, [fx.seed, fx.size, fx.opacity, scale[2]]);
+
+  const sparkUniforms = useMemo(() => ({ uAge: { value: 0 }, uPx: { value: 1 } }), []);
+  const sparkMaterial = useMemo(
+    () =>
+      new ShaderMaterial({
+        vertexShader: SPARK_VERT,
+        fragmentShader: SPARK_FRAG,
+        uniforms: sparkUniforms,
+        transparent: true,
+        depthWrite: false,
+        blending: AdditiveBlending,
+      }),
+    [sparkUniforms],
+  );
+  const sparks = useMemo(() => {
+    const r = rng(fx.seed + 101);
+    const n = fx.count > 1 ? fx.count : 48;
+    const seed = new Float32Array(n * 4), delay = new Float32Array(n), pos = new Float32Array(n * 3);
+    for (let i = 0; i < n; i++) {
+      seed.set([gauss(r) * 0.22, gauss(r) * 0.18, 2.5 + 5 * r(), 0.15 + 0.3 * r()], i * 4);
+      delay[i] = r() * 0.04;
+    }
+    const g = new BufferGeometry();
+    g.setAttribute('position', new Float32BufferAttribute(pos, 3));
+    g.setAttribute('aSeed', new Float32BufferAttribute(seed, 4));
+    g.setAttribute('aDelay', new Float32BufferAttribute(delay, 1));
+    return g;
+  }, [fx.seed, fx.count]);
+  useEffect(
+    () => () => {
+      material.dispose();
+      sparkMaterial.dispose();
+      geometry.dispose();
+      sparks.dispose();
+    },
+    [material, sparkMaterial, geometry, sparks],
+  );
+
+  const period = fx.period ?? 1.6;
+  const k = fx.opacity ?? 1;
+  useFrame(({ clock }) => {
+    const t = clock.elapsedTime;
+    const shot = Math.floor(t / period);
+    const age = t - shot * period;
+    // Peak at the shot, gone in ~0.1 s, with a ragged frame-to-frame flicker; a small ember remains.
+    const burst = Math.exp(-age * 28) * (0.75 + 0.5 * hashT(Math.floor(t * 60)));
+    const gain = Math.max(burst, 0.12 + 0.05 * Math.sin(t * 23));
+    flashUniforms.uGain.value = gain;
+    flashUniforms.uSpin.value = hashT(shot) * 6.28;
+    sparkUniforms.uAge.value = age;
+    sparkUniforms.uPx.value = size.height * dpr;
+    if (light.current) light.current.intensity = k * (0.3 + 5 * burst);
+  });
+
   return (
     <>
       <mesh geometry={geometry} material={material} frustumCulled={false} renderOrder={4} />
-      <pointLight position={[0, 0, 0.1]} color="#ffb070" intensity={(fx.opacity ?? 1) * 2.5} distance={3} decay={2} />
+      <points geometry={sparks} material={sparkMaterial} frustumCulled={false} renderOrder={5} />
+      <pointLight ref={light} position={[0, 0, 0.1]} color="#ffb070" intensity={k * 2.5} distance={3.5} decay={2} />
     </>
   );
 }
@@ -419,7 +550,7 @@ const DUST_DRIFT_MAIN = /* glsl */ `
 }
 `;
 
-function Dust({ fx, scale }: { fx: Fx; scale: Vec3 }) {
+function Dust({ fx, scale, origin }: { fx: Fx; scale: Vec3; origin: Vec3 }) {
   const day = useDaylight();
   const geometry = useMemo(() => {
     const r = rng(fx.seed);
@@ -429,10 +560,16 @@ function Dust({ fx, scale }: { fx: Fx; scale: Vec3 }) {
       if (fx.taper !== undefined) {
         // View-frustum shaped: local +Z is the viewer's end; the box narrows towards it by `taper`.
         // Uniform in depth, so specks are densest close to the viewer and thin out with distance.
-        const d = r();
-        const w = fx.taper + (1 - fx.taper) * d;
+        // Specks that would land below the ground are drawn again.
+        let y = 0, w = 0, d = 0;
+        for (let k = 0; k < 20; k++) {
+          d = r();
+          w = fx.taper + (1 - fx.taper) * d;
+          y = (r() - 0.5) * scale[1] * w;
+          if (y + origin[1] > 0.05) break;
+        }
         pos[i * 3] = (r() - 0.5) * scale[0] * w;
-        pos[i * 3 + 1] = (r() - 0.5) * scale[1] * w;
+        pos[i * 3 + 1] = y;
         pos[i * 3 + 2] = (0.5 - d) * scale[2];
       } else {
         pos[i * 3] = (r() - 0.5) * scale[0];
@@ -447,7 +584,7 @@ function Dust({ fx, scale }: { fx: Fx; scale: Vec3 }) {
     g.setAttribute('position', new Float32BufferAttribute(pos, 3));
     g.setAttribute('aPhase', new Float32BufferAttribute(phase, 3));
     return g;
-  }, [fx.seed, fx.count, fx.taper, scale[0], scale[1], scale[2]]);
+  }, [fx.seed, fx.count, fx.taper, origin, scale[0], scale[1], scale[2]]);
 
   const uniforms = useMemo(() => ({ uTime: { value: 0 }, uDrift: { value: 0 }, uWind: { value: new Vector3(1, 0.15, 0.35).normalize() } }), []);
   const material = useMemo(() => {
@@ -482,7 +619,7 @@ export function FrozenFx({ fx, scale, origin }: { fx: Fx; scale: Vec3; origin: V
       {fx.type === 'flash' && <Flash fx={fx} scale={scale} />}
       {fx.type === 'groundDust' && <GroundDust fx={fx} scale={scale} origin={origin} />}
       {fx.type === 'leaflets' && <Leaflets fx={fx} scale={scale} origin={origin} />}
-      {fx.type === 'dust' && <Dust fx={fx} scale={scale} />}
+      {fx.type === 'dust' && <Dust fx={fx} scale={scale} origin={origin} />}
     </group>
   );
 }
