@@ -1,4 +1,5 @@
-import { useLayoutEffect, useMemo, useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import {
   AdditiveBlending,
   BufferGeometry,
@@ -11,6 +12,7 @@ import {
   type InstancedMesh,
   Matrix4,
   PlaneGeometry,
+  PointsMaterial,
   Quaternion,
   ShaderMaterial,
   SRGBColorSpace,
@@ -390,11 +392,39 @@ function Leaflets({ fx, scale, origin }: { fx: Fx; scale: Vec3; origin: Vec3 }) 
 }
 
 /** Dust motes hanging in the low sunlight; volume = the object's box. */
+/**
+ * Each speck wanders around its own home position, never leaving a radius of about `drift`
+ * metres: two incommensurate slow sines per axis with random phases (so no two specks move
+ * alike), plus a shared gust that rolls through the volume as a travelling wave along the wind,
+ * so neighbouring specks sway together. Pure GPU displacement, no drift accumulates.
+ */
+const DUST_DRIFT = /* glsl */ `
+attribute vec3 aPhase;
+uniform float uTime;
+uniform float uDrift;
+uniform vec3 uWind;
+`;
+const DUST_DRIFT_MAIN = /* glsl */ `
+#include <begin_vertex>
+{
+  float t = uTime;
+  vec3 ph = aPhase;
+  vec3 wander = vec3(
+    sin(t * 0.31 + ph.x) + 0.5 * sin(t * 0.73 + ph.y * 1.7),
+    0.6 * sin(t * 0.27 + ph.y) + 0.3 * sin(t * 0.61 + ph.z),
+    sin(t * 0.23 + ph.z) + 0.5 * sin(t * 0.67 + ph.x * 1.3)
+  ) / 1.5;
+  float gust = sin(t * 0.45 - dot(position.xz, uWind.xz) * 0.35) * (0.65 + 0.35 * sin(t * 0.13 + ph.x * 0.2));
+  transformed += uDrift * (0.7 * wander + 0.6 * gust * uWind);
+}
+`;
+
 function Dust({ fx, scale }: { fx: Fx; scale: Vec3 }) {
   const day = useDaylight();
   const geometry = useMemo(() => {
     const r = rng(fx.seed);
     const pos = new Float32Array(fx.count * 3);
+    const phase = new Float32Array(fx.count * 3);
     for (let i = 0; i < fx.count; i++) {
       if (fx.taper !== undefined) {
         // View-frustum shaped: local +Z is the viewer's end; the box narrows towards it by `taper`.
@@ -409,26 +439,35 @@ function Dust({ fx, scale }: { fx: Fx; scale: Vec3 }) {
         pos[i * 3 + 1] = (Math.pow(r(), 1.6) - 0.5) * scale[1]; // denser near the ground
         pos[i * 3 + 2] = (r() - 0.5) * scale[2];
       }
+      phase[i * 3] = r() * Math.PI * 2;
+      phase[i * 3 + 1] = r() * Math.PI * 2;
+      phase[i * 3 + 2] = r() * Math.PI * 2;
     }
     const g = new BufferGeometry();
     g.setAttribute('position', new Float32BufferAttribute(pos, 3));
+    g.setAttribute('aPhase', new Float32BufferAttribute(phase, 3));
     return g;
   }, [fx.seed, fx.count, fx.taper, scale[0], scale[1], scale[2]]);
-  const color = useMemo(() => new Color(), []);
-  color.set(day?.sunColor ?? '#ffffff').multiplyScalar((fx.opacity ?? 0.6) * (day?.sun ?? 1));
-  return (
-    <points geometry={geometry} frustumCulled={false} renderOrder={3}>
-      <pointsMaterial
-        map={dustTexture()}
-        color={color}
-        size={fx.size}
-        sizeAttenuation
-        transparent
-        depthWrite={false}
-        blending={AdditiveBlending}
-      />
-    </points>
-  );
+
+  const uniforms = useMemo(() => ({ uTime: { value: 0 }, uDrift: { value: 0 }, uWind: { value: new Vector3(1, 0.15, 0.35).normalize() } }), []);
+  const material = useMemo(() => {
+    const m = new PointsMaterial({ map: dustTexture(), sizeAttenuation: true, transparent: true, depthWrite: false, blending: AdditiveBlending });
+    m.onBeforeCompile = (shader) => {
+      Object.assign(shader.uniforms, uniforms);
+      shader.vertexShader = shader.vertexShader.replace('#include <common>', `#include <common>\n${DUST_DRIFT}`).replace('#include <begin_vertex>', DUST_DRIFT_MAIN);
+    };
+    return m;
+  }, [uniforms]);
+  useEffect(() => () => material.dispose(), [material]);
+
+  uniforms.uDrift.value = fx.drift ?? 0;
+  material.size = fx.size;
+  material.color.set(day?.sunColor ?? '#ffffff').multiplyScalar((fx.opacity ?? 0.6) * (day?.sun ?? 1));
+  useFrame(({ clock }) => {
+    uniforms.uTime.value = clock.elapsedTime;
+  });
+
+  return <points geometry={geometry} material={material} frustumCulled={false} renderOrder={3} />;
 }
 
 /**

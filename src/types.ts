@@ -56,6 +56,8 @@ export interface SceneObject {
     avoid?: Vec3[];
     clear?: number;
     eye?: Vec3;
+    /** dust: how far (m) each speck sways around its home position in the breeze (0 = still). */
+    drift?: number;
     /** dust: frustum-shaped volume narrowing to this fraction at the local +Z (viewer) end. */
     taper?: number;
     /** groundDust: world points (behind runners' feet, hooves) where kicked-up dirt clusters. */

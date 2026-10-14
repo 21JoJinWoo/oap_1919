@@ -2125,7 +2125,8 @@
         "size": 0.03,
         "seed": 5,
         "opacity": 0.8,
-        "taper": 0.14
+        "taper": 0.14,
+        "drift": 0.06
       },
       "kind": "fx",
       "visible": true,
