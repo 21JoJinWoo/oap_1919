@@ -2469,6 +2469,110 @@
       "visible": true,
       "castShadow": true,
       "receiveShadow": true
+    },
+    {
+      "id": "obj-tree-side-01",
+      "name": "좌측 담장 앞 나무 1",
+      "kind": "glb",
+      "src": "/models/tree_2-1b269460d6.glb",
+      "bytes": 11133892,
+      "triangles": 41643,
+      "position": [
+        -31,
+        0,
+        -7
+      ],
+      "rotation": [
+        0,
+        60,
+        0
+      ],
+      "scale": [
+        8.6,
+        8.6,
+        8.6
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-tree-side-02",
+      "name": "좌측 담장 앞 나무 2",
+      "kind": "glb",
+      "src": "/models/tree_1-d6bea5eb2d.glb",
+      "bytes": 31415072,
+      "triangles": 32911,
+      "position": [
+        -33,
+        0,
+        -19
+      ],
+      "rotation": [
+        0,
+        190,
+        0
+      ],
+      "scale": [
+        9.0,
+        9.0,
+        9.0
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-tree-side-03",
+      "name": "우측 담장 앞 나무 3",
+      "kind": "glb",
+      "src": "/models/tree_1-d6bea5eb2d.glb",
+      "bytes": 31415072,
+      "triangles": 32911,
+      "position": [
+        30,
+        0,
+        -6
+      ],
+      "rotation": [
+        0,
+        280,
+        0
+      ],
+      "scale": [
+        8.4,
+        8.4,
+        8.4
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": true
+    },
+    {
+      "id": "obj-tree-side-04",
+      "name": "우측 담장 앞 나무 4",
+      "kind": "glb",
+      "src": "/models/tree_2-1b269460d6.glb",
+      "bytes": 11133892,
+      "triangles": 41643,
+      "position": [
+        33,
+        0,
+        -16
+      ],
+      "rotation": [
+        0,
+        120,
+        0
+      ],
+      "scale": [
+        9.2,
+        9.2,
+        9.2
+      ],
+      "visible": true,
+      "castShadow": true,
+      "receiveShadow": true
     }
   ]
 }
