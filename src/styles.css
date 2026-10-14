@@ -554,3 +554,18 @@ button {
   background: rgb(120, 180, 255);
   box-shadow: 0 0 8px rgba(120, 180, 255, 0.8);
 }
+
+/* Exhibition mode: nothing but the space. */
+.app-root.exhibit,
+.app-root.exhibit * {
+  cursor: none !important;
+}
+.camera-preview.camera-preview-hidden {
+  width: 2px;
+  height: 2px;
+  right: 0;
+  bottom: 0;
+  border: 0;
+  opacity: 0.01;
+  pointer-events: none;
+}

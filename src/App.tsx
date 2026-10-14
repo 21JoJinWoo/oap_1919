@@ -22,6 +22,7 @@ export function App() {
   /** Server version the user chose to ignore, so the banner doesn't reappear for it. */
   const dismissedAt = useRef<string | null>(null);
   const [tracker, setTracker] = useState<FaceTracker | null>(null);
+  const exhibit = useUi((s) => s.exhibit);
   const glRef = useRef<RootState['gl'] | null>(null);
   const recorder = useRef<MediaRecorder | null>(null);
 
@@ -172,6 +173,13 @@ export function App() {
         return;
       }
       if ((e.target as HTMLElement).closest('input, textarea, select')) return;
+      if (useUi.getState().exhibit) {
+        // Exhibition: Esc back to EDIT, F toggles full screen; everything else is ignored.
+        if (key === 'escape') useUi.getState().set({ exhibit: false });
+        else if (key === 'f') void toggleFullscreen();
+        e.preventDefault();
+        return;
+      }
       if (s.readOnly) {
         return;
       } else if (mod && key === 'z') {
@@ -211,6 +219,16 @@ export function App() {
 
   if (loadError) return <div className="splash">장면을 불러오지 못했습니다: {loadError}</div>;
   if (!doc) return <div className="splash">LOADING · 1919 탑골공원</div>;
+
+  if (exhibit)
+    return (
+      <div className="app-root exhibit">
+        <div className="stage">
+          <Stage onCreated={(s) => (glRef.current = s.gl)} />
+        </div>
+        <CameraPreview tracker={tracker} onRecord={toggleRecording} hidden />
+      </div>
+    );
 
   return (
     <div className="app-root">
@@ -268,6 +286,23 @@ export function App() {
   );
 }
 
+async function toggleFullscreen() {
+  try {
+    if (document.fullscreenElement) await document.exitFullscreen();
+    else await document.documentElement.requestFullscreen();
+  } catch {
+    /* not allowed without a user gesture; ignore */
+  }
+}
+
+/** Enter the exhibition view: head-tracked portal, nothing selected, every panel closed. */
+function enterExhibit() {
+  const s = useScene.getState();
+  s.setMode('spatial');
+  s.select(null);
+  useUi.getState().set({ exhibit: true, panel: null });
+}
+
 function Hud({ tracker, onSave, onRecord }: { tracker: FaceTracker | null; onSave: () => void; onRecord: () => void }) {
   const mode = useScene((s) => s.mode);
   const setMode = useScene((s) => s.setMode);
@@ -322,11 +357,15 @@ function Hud({ tracker, onSave, onRecord }: { tracker: FaceTracker | null; onSav
           {recording ? '■ REC' : '● REC'}
         </button>
         <div className="seg">
-          <button className={mode === 'spatial' ? 'on' : ''} title="오프-축 포탈 뷰 (페이스 트래킹)" onClick={() => setMode('spatial')}>
-            spatial
+          <button
+            className="on"
+            title="편집 화면 (Tab: 포탈 뷰 ↔ 자유 시점)"
+            onClick={() => setMode('spatial')}
+          >
+            {mode === 'spatial' ? 'edit' : 'edit · 자유 시점'}
           </button>
-          <button className={mode === 'edit' ? 'on' : ''} title="3D 씬 자유 카메라 (드래그: 회전, 우클릭: 팬, 휠: 줌)" onClick={() => setMode('edit')}>
-            edit
+          <button title="전시용 화면: UI 없이 공간만 (Esc: 편집으로, F: 전체 화면)" onClick={enterExhibit}>
+            사용자 모드
           </button>
         </div>
       </div>
@@ -351,9 +390,9 @@ function Hud({ tracker, onSave, onRecord }: { tracker: FaceTracker | null; onSav
 
       <div className="controls-hint">
         {mode === 'spatial' ? (
-          <div>MOVE HEAD ← → — SHIFT PERSPECTIVE · TAB: EDIT MODE</div>
+          <div>MOVE HEAD ← → — SHIFT PERSPECTIVE · TAB: 자유 시점</div>
         ) : (
-          <div>DRAG: ORBIT · RIGHT-DRAG: PAN · WHEEL: ZOOM · TAB: SPATIAL MODE</div>
+          <div>DRAG: ORBIT · RIGHT-DRAG: PAN · WHEEL: ZOOM · TAB: 포탈 뷰</div>
         )}
         {!readOnly && <div>CLICK MODEL → SELECT | E MOVE · R ROTATE · T SCALE · DEL DELETE · CTRL+S SAVE</div>}
       </div>

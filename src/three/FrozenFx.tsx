@@ -396,14 +396,24 @@ function Dust({ fx, scale }: { fx: Fx; scale: Vec3 }) {
     const r = rng(fx.seed);
     const pos = new Float32Array(fx.count * 3);
     for (let i = 0; i < fx.count; i++) {
-      pos[i * 3] = (r() - 0.5) * scale[0];
-      pos[i * 3 + 1] = (Math.pow(r(), 1.6) - 0.5) * scale[1]; // denser near the ground
-      pos[i * 3 + 2] = (r() - 0.5) * scale[2];
+      if (fx.taper !== undefined) {
+        // View-frustum shaped: local +Z is the viewer's end; the box narrows towards it by `taper`.
+        // Uniform in depth, so specks are densest close to the viewer and thin out with distance.
+        const d = r();
+        const w = fx.taper + (1 - fx.taper) * d;
+        pos[i * 3] = (r() - 0.5) * scale[0] * w;
+        pos[i * 3 + 1] = (r() - 0.5) * scale[1] * w;
+        pos[i * 3 + 2] = (0.5 - d) * scale[2];
+      } else {
+        pos[i * 3] = (r() - 0.5) * scale[0];
+        pos[i * 3 + 1] = (Math.pow(r(), 1.6) - 0.5) * scale[1]; // denser near the ground
+        pos[i * 3 + 2] = (r() - 0.5) * scale[2];
+      }
     }
     const g = new BufferGeometry();
     g.setAttribute('position', new Float32BufferAttribute(pos, 3));
     return g;
-  }, [fx.seed, fx.count, scale[0], scale[1], scale[2]]);
+  }, [fx.seed, fx.count, fx.taper, scale[0], scale[1], scale[2]]);
   const color = useMemo(() => new Color(), []);
   color.set(day?.sunColor ?? '#ffffff').multiplyScalar((fx.opacity ?? 0.6) * (day?.sun ?? 1));
   return (

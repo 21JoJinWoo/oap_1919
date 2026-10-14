@@ -20,6 +20,7 @@ import {
 } from 'three';
 import { assetUrl } from '../lib/assets';
 import { useScene } from '../store/sceneStore';
+import { useUi } from '../store/uiStore';
 import { BulletTrail } from './BulletTrail';
 import { FrozenFx } from './FrozenFx';
 import { ktx2Loader } from './ktx2';
@@ -79,7 +80,7 @@ function primitiveGeometry(kind: PrimitiveKind, segments = 24, arc: [number, num
 function onSelect(type: 'object' | 'light', id: string) {
   return (e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation();
-    if (useScene.getState().readOnly) return;
+    if (useScene.getState().readOnly || useUi.getState().exhibit) return;
     useScene.getState().select({ type, id });
   };
 }

@@ -2105,26 +2105,27 @@
       "id": "fx-dust",
       "name": "공중 먼지",
       "position": [
-        -1.5,
-        1.8,
-        -1.5
+        -2.2,
+        1.6,
+        -2.05
       ],
       "rotation": [
         0,
-        0,
+        -3.5,
         0
       ],
       "scale": [
-        14,
-        3.6,
-        14
+        12.5,
+        7.6,
+        11.5
       ],
       "fx": {
         "type": "dust",
         "count": 3000,
         "size": 0.03,
         "seed": 5,
-        "opacity": 0.8
+        "opacity": 0.8,
+        "taper": 0.14
       },
       "kind": "fx",
       "visible": true,

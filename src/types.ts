@@ -56,6 +56,8 @@ export interface SceneObject {
     avoid?: Vec3[];
     clear?: number;
     eye?: Vec3;
+    /** dust: frustum-shaped volume narrowing to this fraction at the local +Z (viewer) end. */
+    taper?: number;
     /** groundDust: world points (behind runners' feet, hooves) where kicked-up dirt clusters. */
     sources?: Vec3[];
   };

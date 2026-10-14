@@ -42,7 +42,7 @@ export function TrackingToggle({ tracker }: { tracker: FaceTracker | null }) {
 }
 
 /** Mirrored webcam preview with the detected face box, plus the record button. */
-export function CameraPreview({ tracker, onRecord }: { tracker: FaceTracker | null; onRecord: () => void }) {
+export function CameraPreview({ tracker, onRecord, hidden = false }: { tracker: FaceTracker | null; onRecord: () => void; hidden?: boolean }) {
   const box = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const status = useUi((s) => s.tracker);
@@ -81,7 +81,13 @@ export function CameraPreview({ tracker, onRecord }: { tracker: FaceTracker | nu
   }, [tracker, status]);
 
   return (
-    <div ref={box} className="camera-preview" style={{ display: status === 'running' ? 'block' : 'none' }}>
+    // Hidden (exhibition): the webcam video must stay attached and rendered — a detached video
+    // element pauses — so it shrinks to an invisible speck instead of unmounting.
+    <div
+      ref={box}
+      className={`camera-preview ${hidden ? 'camera-preview-hidden' : ''}`}
+      style={{ display: hidden || status === 'running' ? 'block' : 'none' }}
+    >
       <canvas ref={canvas} width={160} height={120} />
       <button
         className={`rec-btn ${recording ? 'on' : ''}`}
