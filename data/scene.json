@@ -2049,7 +2049,7 @@
       ],
       "fx": {
         "type": "leaflets",
-        "count": 300,
+        "count": 150,
         "size": 0.2,
         "seed": 11,
         "avoid": [
@@ -2121,7 +2121,7 @@
       ],
       "fx": {
         "type": "dust",
-        "count": 24000,
+        "count": 12000,
         "size": 0.03,
         "seed": 5,
         "opacity": 0.8,
