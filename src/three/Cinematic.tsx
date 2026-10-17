@@ -3,9 +3,9 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { Bloom, EffectComposer, N8AO, SMAA } from '@react-three/postprocessing';
 import { BlendFunction, Effect, EffectAttribute } from 'postprocessing';
 import { useEffect, useMemo } from 'react';
-import { Uniform, Vector3 } from 'three';
+import { type Camera, Uniform, Vector2, Vector3 } from 'three';
 import { useScene } from '../store/sceneStore';
-import type { SceneSettings } from '../types';
+import type { SceneObject, SceneSettings } from '../types';
 
 type Grade = NonNullable<SceneSettings['cinematic']>['grade'];
 
@@ -98,9 +98,114 @@ function GradePass({ grade }: { grade: Grade }) {
   return <primitive object={effect} dispose={null} />;
 }
 
+/**
+ * The bullet's wake as cinema shows it — air has no surface, only the image behind it ripples.
+ * A screen-space distortion over the projected wake (a tapered capsule from the bullet's nose back
+ * along the line of fire): radial ripples stream back from the bullet, strongest right behind it
+ * and fading out, plus a thin shimmering ring around the nose for the supersonic shock cone
+ * (6.5 mm Arisaka ≈ 760 m/s, Mach ≈ 2.2, cone half-angle asin(1/M) ≈ 27°).
+ */
+const WAKE_FRAG = /* glsl */ `
+uniform vec2 uA;
+uniform vec2 uB;
+uniform float uRa;
+uniform float uRb;
+uniform float uRing;
+uniform float uTime;
+uniform float uFlow;
+uniform float uStrength;
+uniform float uAspect;
+uniform float uDepthA;
+
+void mainUv(inout vec2 uv) {
+  if (uStrength <= 0.0) return;
+  // Only what lies behind the bullet ripples; the bullet itself stays crisp.
+  if (readDepth(uv) <= uDepthA) return;
+  vec2 k = vec2(uAspect, 1.0);
+  vec2 p = uv * k, a = uA * k, b = uB * k;
+  vec2 ab = b - a;
+  float t = clamp(dot(p - a, ab) / max(dot(ab, ab), 1e-8), 0.0, 1.0);
+  vec2 dv = p - (a + ab * t);
+  float d = length(dv);
+  float r = mix(uRa, uRb, t);
+  vec2 dir = d > 1e-6 ? dv / d : vec2(0.0);
+  float body = (1.0 - smoothstep(0.35 * r, r, d)) * (1.0 - smoothstep(0.4, 1.0, t));
+  float wave = sin(t * 38.0 - uTime * uFlow * 18.0 + d / r * 5.0)
+             + 0.45 * sin(t * 83.0 - uTime * uFlow * 31.0 + atan(dv.y, dv.x) * 3.0);
+  vec2 off = dir * wave * body * r * uStrength;
+  // Shock ring around the nose.
+  vec2 dn = p - a;
+  float ln = length(dn);
+  float ring = exp(-pow((ln - uRing) / (uRing * 0.1), 2.0));
+  off += (ln > 1e-6 ? dn / ln : vec2(0.0)) * ring * uRing * uStrength * 0.25 * sin(uTime * 24.0 + ln * 300.0);
+  vec2 moved = uv + off / k;
+  // Never pull the bullet (or anything in front of it) into the wake.
+  if (readDepth(moved) > uDepthA) uv = moved;
+}
+`;
+
+class WakeEffect extends Effect {
+  constructor() {
+    super('WakeEffect', WAKE_FRAG, {
+      attributes: EffectAttribute.DEPTH,
+      uniforms: new Map<string, Uniform>(
+        ['uA', 'uB'].map((n) => [n, new Uniform(new Vector2())] as [string, Uniform]).concat(
+          ['uRa', 'uRb', 'uRing', 'uTime', 'uFlow', 'uStrength', 'uAspect', 'uDepthA'].map((n) => [n, new Uniform(0)] as [string, Uniform]),
+        ),
+      ),
+    });
+  }
+}
+
+const tmpA = new Vector3();
+const tmpB = new Vector3();
+const tmpUp = new Vector3();
+
+/** Screen-space radius (in uv-height units) of a sphere of `r` metres at `p`. */
+function screenRadius(camera: Camera, p: Vector3, r: number) {
+  tmpUp.setFromMatrixColumn(camera.matrixWorld, 1).multiplyScalar(r).add(p).project(camera);
+  const c = tmpB.copy(p).project(camera);
+  return Math.abs(tmpUp.y - c.y) / 2;
+}
+
+function WakeDistortion({ trail, strength }: { trail: NonNullable<SceneObject['trail']>; strength: number }) {
+  const effect = useMemo(() => new WakeEffect(), []);
+  useEffect(() => () => effect.dispose(), [effect]);
+  const geo = useMemo(() => {
+    const to = new Vector3(...trail.to);
+    const dir = new Vector3(...trail.from).sub(to).normalize(); // bullet → muzzle
+    return {
+      nose: to.clone().addScaledVector(dir, -0.095),
+      tail0: to.clone(),
+      tail: to.clone().addScaledVector(dir, Math.min(1.4, new Vector3(...trail.from).distanceTo(to))),
+      cone: to.clone().addScaledVector(dir, 0.06), // a little behind the nose, where the cone is ~3 cm wide
+    };
+  }, [trail.from, trail.to]);
+  useFrame(({ camera, clock, size }) => {
+    const u = effect.uniforms;
+    const a = tmpA.copy(geo.nose).project(camera);
+    const visible = a.z < 1 && a.z > -1;
+    u.get('uStrength')!.value = visible ? strength : 0;
+    if (!visible) return;
+    u.get('uA')!.value.set(a.x * 0.5 + 0.5, a.y * 0.5 + 0.5);
+    // Depth-buffer value of the bullet's tail (same non-linear 0–1 range as readDepth()).
+    u.get('uDepthA')!.value = tmpB.copy(geo.tail0).project(camera).z * 0.5 + 0.5 + 1e-6;
+    const b = tmpB.copy(geo.tail).project(camera);
+    u.get('uB')!.value.set(b.x * 0.5 + 0.5, b.y * 0.5 + 0.5);
+    u.get('uRa')!.value = screenRadius(camera, geo.nose, trail.radius * 0.8);
+    u.get('uRb')!.value = screenRadius(camera, geo.tail, trail.radius * 2.2);
+    u.get('uRing')!.value = screenRadius(camera, geo.cone, 0.06 * Math.tan((27 * Math.PI) / 180) + 0.01);
+    u.get('uTime')!.value = clock.elapsedTime;
+    u.get('uFlow')!.value = trail.flow ?? 0.8;
+    u.get('uAspect')!.value = size.width / size.height;
+  });
+  return <primitive object={effect} dispose={null} />;
+}
+
 /** Ambient occlusion, bloom, filmic grading and soft sun shadows, configured by `settings.cinematic`. */
 export function Cinematic() {
   const c = useScene((s) => s.doc?.settings.cinematic);
+  const trail = useScene((s) => s.doc?.objects.find((o) => o.kind === 'trail' && o.visible && o.trail)?.trail);
   if (!c?.enabled) return null;
   return (
     <>
@@ -114,6 +219,7 @@ export function Cinematic() {
           halfRes
           depthAwareUpsampling
         />
+        {trail && (c.wake ?? 0) > 0 && <WakeDistortion trail={trail} strength={c.wake!} />}
         <Bloom intensity={c.bloom.intensity} luminanceThreshold={c.bloom.threshold} luminanceSmoothing={0.2} mipmapBlur />
         <GradePass grade={c.grade} />
         <SMAA />

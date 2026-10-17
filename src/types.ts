@@ -23,8 +23,8 @@ export interface SceneObject {
    */
   arc?: [number, number, number];
   /**
-   * Frozen bullet shock-wave trail (kind 'trail'): mirror-like bulges from
-   * `from` (muzzle) to `to` (bullet), largest at the bullet, in the object's frame.
+   * Bullet wake (kind 'trail'): refracting air from `to` (just behind the bullet) back towards
+   * `from`, a Mach cone at the nose and speed streaks; `radius` = peak wake radius, metres.
    */
   trail?: {
     from: Vec3;
@@ -35,6 +35,8 @@ export interface SceneObject {
     flow?: number;
     /** Number of faint speed streaks racing along the trail. */
     streaks?: number;
+    /** Half-angle of the shock (Mach) cone at the nose, degrees; asin(1/M). */
+    machAngleDeg?: number;
   };
   /** Continuous spin about a local axis (e.g. a bullet's rifling spin), revolutions per second. */
   spin?: { axis: Vec3; rps: number };
@@ -129,6 +131,8 @@ export interface SceneSettings {
       vignette: number;
       grain: number;
     };
+    /** Strength of the bullet wake's heat-haze distortion (0 = off). */
+    wake?: number;
     /** PCSS light size for soft sun shadows (0 = off). */
     softShadows: number;
   };

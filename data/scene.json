@@ -65,7 +65,8 @@
         "vignette": 0.6,
         "grain": 0.045
       },
-      "softShadows": 0
+      "softShadows": 0,
+      "wake": 0.09
     }
   },
   "lights": [
@@ -1962,7 +1963,7 @@
     },
     {
       "id": "obj-bullet-trail",
-      "name": "총알 궤적 (정지)",
+      "name": "총알 궤적 (공기 굴절)",
       "kind": "trail",
       "position": [
         0,
@@ -1994,9 +1995,10 @@
           4.652
         ],
         "count": 26,
-        "radius": 0.024,
+        "radius": 0.03,
         "flow": 0.8,
-        "streaks": 14
+        "streaks": 0,
+        "machAngleDeg": 27
       }
     },
     {
