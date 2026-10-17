@@ -2583,13 +2583,13 @@
       "src": "/models/flag_girl-5aa9e2ff0c.glb",
       "bytes": 1018500,
       "position": [
-        1,
+        1.4,
         0,
-        -18.5
+        -2.6
       ],
       "rotation": [
         0,
-        10,
+        -30,
         0
       ],
       "scale": [
