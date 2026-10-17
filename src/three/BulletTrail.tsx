@@ -61,7 +61,7 @@ export function BulletTrail({ trail }: { trail: NonNullable<SceneObject['trail']
     <>
       {streakCount > 0 && (
         <instancedMesh ref={streaks} args={[streakGeo, undefined, streakCount]} frustumCulled={false} renderOrder={3}>
-          <meshBasicMaterial color="#ffffff" transparent opacity={0.12} blending={AdditiveBlending} depthWrite={false} />
+          <meshBasicMaterial color="#ffffff" transparent opacity={0.18} blending={AdditiveBlending} depthWrite={false} />
         </instancedMesh>
       )}
     </>
