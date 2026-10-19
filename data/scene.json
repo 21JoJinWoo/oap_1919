@@ -2583,13 +2583,13 @@
       "src": "/models/flag_girl-5aa9e2ff0c.glb",
       "bytes": 1018500,
       "position": [
-        1.4,
+        1,
         0,
-        -2.6
+        -18.5
       ],
       "rotation": [
         0,
-        -30,
+        10,
         0
       ],
       "scale": [
@@ -2608,7 +2608,7 @@
       "src": "/models/flag_man-4236ba424d.glb",
       "bytes": 570308,
       "position": [
-        -2.8,
+        -1.2,
         0,
         -14.5
       ],
@@ -2633,13 +2633,13 @@
       "src": "/models/cane_grandfather-c87ce8e70f.glb",
       "bytes": 1234116,
       "position": [
-        6,
+        1.4,
         0,
-        -6
+        -2.6
       ],
       "rotation": [
         0,
-        -60,
+        -30,
         0
       ],
       "scale": [
