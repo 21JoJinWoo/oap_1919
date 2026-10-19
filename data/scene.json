@@ -2633,13 +2633,13 @@
       "src": "/models/cane_grandfather-c87ce8e70f.glb",
       "bytes": 1234116,
       "position": [
-        1.7,
+        7.0,
         0,
-        -1.9
+        -5.8
       ],
       "rotation": [
         0,
-        -30,
+        -65,
         0
       ],
       "scale": [
@@ -2658,13 +2658,13 @@
       "src": "/models/cane_grandmother-7a43aac2dc.glb",
       "bytes": 1086096,
       "position": [
-        7.0,
+        1.7,
         0,
-        -5.8
+        -1.9
       ],
       "rotation": [
         0,
-        -65,
+        -30,
         0
       ],
       "scale": [
