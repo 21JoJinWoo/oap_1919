@@ -213,11 +213,10 @@
     },
     {
       "id": "obj-man-reader",
-      "name": "독립선언서 낭독 남성",
+      "name": "독립선언서 낭독 남성 (정장·안경)",
       "kind": "glb",
-      "src": "/models/man-aceb7ff521.glb",
-      "bytes": 1121920,
-      "triangles": 30570,
+      "src": "/models/jung-6e27817ccc.glb",
+      "bytes": 987404,
       "position": [
         0,
         0.68,
@@ -229,9 +228,9 @@
         0
       ],
       "scale": [
-        1.766,
-        1.766,
-        1.766
+        1.798,
+        1.798,
+        1.798
       ],
       "visible": true,
       "castShadow": true,
