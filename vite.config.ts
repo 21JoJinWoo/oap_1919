@@ -39,6 +39,8 @@ function localAssets(): Plugin {
 }
 
 export default defineConfig({
+  // GitHub Pages serves the site under /<repository>/; the deploy workflow sets BASE_PATH.
+  base: process.env.BASE_PATH ?? '/',
   plugins: [react(), localAssets()],
   build: {
     chunkSizeWarningLimit: 1500,

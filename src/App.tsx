@@ -31,6 +31,10 @@ export function App() {
     loadScene()
       .then(({ doc, readOnly }) => {
         useScene.getState().load(doc, { readOnly, savedAt: doc.updatedAt });
+        // Static hosting (e.g. GitHub Pages) cannot save, so visitors land in the exhibition view;
+        // ?mode=edit opens the editor anyway (Esc also leaves the exhibition view).
+        const mode = new URLSearchParams(window.location.search).get('mode');
+        if (readOnly && mode !== 'edit') useUi.getState().set({ exhibit: true });
         neutralPose(doc.settings.viewer.defaultDistanceCm / 100);
         const d = readDraft();
         if (d && !readOnly && !sameScene(d.doc, doc)) setDraft(d);
