@@ -170,6 +170,11 @@ export interface SceneSettings {
     webcamFovDeg: number;
     /** Extra gain applied to sideways / vertical head motion (1 = physically correct). */
     parallax: number;
+    /**
+     * Exhibition view only (사용자 모드): how much wider the space is shown, for visitors standing
+     * that many times farther from the screen than the laptop the scene was tuned on (1 = off).
+     */
+    exhibitZoomOut?: number;
     /** Move the virtual eye opposite to the tracked head sideways. */
     invertX?: boolean;
     /** Move the virtual eye opposite to the tracked head vertically. */

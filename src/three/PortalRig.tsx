@@ -62,7 +62,9 @@ export function PortalRig() {
     camera.windowWidth = portal.width;
     camera.windowCenter.fromArray(portal.center);
     camera.windowQuat.copy(quat.setFromEuler(euler.set(0, MathUtils.degToRad(portal.yawDeg), 0)));
-    const eye = eyeInWindow(doc.settings, headPose);
+    // The exhibition view (사용자 모드) is watched from much farther away than the laptop it was
+    // tuned on; zoom out so visitors see the same space instead of a magnified slice of it.
+    const eye = eyeInWindow(doc.settings, headPose, ui.exhibit ? (viewer.exhibitZoomOut ?? 1) : 1);
     camera.eyeLocal.set(eye.x, eye.y, eye.z);
     camera.near = Math.min(0.05, camera.eyeLocal.z * 0.5);
     camera.updatePose();
