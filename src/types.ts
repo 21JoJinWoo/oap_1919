@@ -175,6 +175,8 @@ export interface SceneSettings {
      * that many times farther from the screen than the laptop the scene was tuned on (1 = off).
      */
     exhibitZoomOut?: number;
+    /** Exhibition view only: visible width of the exhibition screen (e.g. the iMac), centimetres. */
+    exhibitScreenWidthCm?: number;
     /** Move the virtual eye opposite to the tracked head sideways. */
     invertX?: boolean;
     /** Move the virtual eye opposite to the tracked head vertically. */

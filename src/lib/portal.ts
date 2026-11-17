@@ -21,3 +21,11 @@ export function eyeInWindow(
     z: (pose.z * k) / ((portal.fovScale ?? 1) * zoomOut),
   };
 }
+
+/**
+ * The viewer setup in effect: the exhibition view (사용자 모드) runs on the exhibition screen,
+ * whose physical width can differ from the screen the scene is edited on.
+ */
+export function viewerFor(viewer: SceneSettings['viewer'], exhibit: boolean): SceneSettings['viewer'] {
+  return exhibit && viewer.exhibitScreenWidthCm ? { ...viewer, screenWidthCm: viewer.exhibitScreenWidthCm } : viewer;
+}

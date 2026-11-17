@@ -1,5 +1,6 @@
 import type { RootState } from '@react-three/fiber';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { viewerFor } from './lib/portal';
 import { ApiError, loadScene, readDraft, saveScene, writeDraft, type Draft } from './lib/api';
 import { useScene } from './store/sceneStore';
 import { useUi } from './store/uiStore';
@@ -93,13 +94,13 @@ export function App() {
   useEffect(() => {
     if (!tracker || !viewer) return;
     const update = () => {
-      const screenW = viewer.screenWidthCm / 100;
+      const screenW = viewerFor(viewer, exhibit).screenWidthCm / 100;
       tracker.setConfig({ webcamFovDeg: viewer.webcamFovDeg, screenHeightM: screenW * (window.innerHeight / window.innerWidth) });
     };
     update();
     window.addEventListener('resize', update);
     return () => window.removeEventListener('resize', update);
-  }, [tracker, viewer]);
+  }, [tracker, viewer, exhibit]);
 
   // ---------- save ----------
   const save = useCallback(async () => {

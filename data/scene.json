@@ -26,7 +26,8 @@
       "webcamFovDeg": 60,
       "parallax": 1.5,
       "defaultDistanceCm": 60,
-      "exhibitZoomOut": 3
+      "exhibitZoomOut": 1.96,
+      "exhibitScreenWidthCm": 52.0
     },
     "environment": {
       "hdr": "/env/citrus_orchard_road_puresky_4k-env.hdr",

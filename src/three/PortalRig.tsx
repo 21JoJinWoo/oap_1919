@@ -1,7 +1,7 @@
 import { useFrame, useThree } from '@react-three/fiber';
 import { useLayoutEffect, useMemo } from 'react';
 import { Euler, MathUtils, Quaternion } from 'three';
-import { eyeInWindow } from '../lib/portal';
+import { eyeInWindow, viewerFor } from '../lib/portal';
 import { useScene } from '../store/sceneStore';
 import { useUi } from '../store/uiStore';
 import { headPose } from '../tracking/headPose';
@@ -39,12 +39,13 @@ export function PortalRig() {
   useFrame((_, delta) => {
     const doc = useScene.getState().doc;
     if (!doc) return;
-    const { portal, viewer } = doc.settings;
+    const ui = useUi.getState();
+    const { portal } = doc.settings;
+    const viewer = viewerFor(doc.settings.viewer, ui.exhibit);
     const screenW = viewer.screenWidthCm / 100;
     const screenH = screenW / camera.aspect;
     const restZ = viewer.defaultDistanceCm / 100;
 
-    const ui = useUi.getState();
     const useCamera = !ui.mouseMode && ui.tracker === 'running';
     headPose.source = useCamera ? 'camera' : 'mouse';
     const ease = 1 - Math.exp(-delta * 6);
@@ -64,7 +65,7 @@ export function PortalRig() {
     camera.windowQuat.copy(quat.setFromEuler(euler.set(0, MathUtils.degToRad(portal.yawDeg), 0)));
     // The exhibition view (사용자 모드) is watched from much farther away than the laptop it was
     // tuned on; zoom out so visitors see the same space instead of a magnified slice of it.
-    const eye = eyeInWindow(doc.settings, headPose, ui.exhibit ? (viewer.exhibitZoomOut ?? 1) : 1);
+    const eye = eyeInWindow({ portal, viewer }, headPose, ui.exhibit ? (viewer.exhibitZoomOut ?? 1) : 1);
     camera.eyeLocal.set(eye.x, eye.y, eye.z);
     camera.near = Math.min(0.05, camera.eyeLocal.z * 0.5);
     camera.updatePose();
